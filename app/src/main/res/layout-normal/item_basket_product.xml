@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    android:background="#bebbbb"
+    android:elevation="3dp"
+    android:orientation="horizontal"
+    android:padding="2dp"
+    android:translationX="5dp"
+    android:translationZ="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/image_product"
+            android:layout_width="92dp"
+            android:layout_height="92dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="5dp"
+            app:srcCompat="@drawable/pizzatwo" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/name_product"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:paddingStart="5dp"
+                android:text="Кукусики"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="2dp"
+                    android:paddingStart="5dp"
+                    android:text="@string/cast"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/cast_product"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="2dp"
+                    android:text="1000"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="2dp"
+                    android:paddingStart="5dp"
+                    android:text="@string/count"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/count_product"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="2dp"
+                    android:text="10"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/seekBar_count_basket"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:max="10" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

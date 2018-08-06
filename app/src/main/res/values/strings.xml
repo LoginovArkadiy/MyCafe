@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">MyCafe</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="profile">Мой профиль</string>
+    <string name="workers">Сотрудники</string>
+    <string name="menu">Меню</string>
+    <string name="basket">Корзина</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="contact">Контакты</string>
+    <string name="reviews">Отзывы</string>
+    <string name="about">О приложении</string>
+    <string name="news">Новости</string>
+    <string name="clear_basket">Очистить корзину</string>
+    <string name="create_order">Оформить заказ</string>
+    <string name="count">Количество:</string>
+    <string name="cast">Стоимость:</string>
+    <string name="todaywork">Сегодня на смене</string>
+
+    <string-array name="adminlist">
+        <item>Пицца</item>
+        <item>Маффин</item>
+        <item>Новость</item>
+        <item>Сотрудник</item>
+    </string-array>
+</resources>

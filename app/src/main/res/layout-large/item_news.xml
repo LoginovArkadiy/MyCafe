@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="#bebbbb"
+    android:elevation="3dp"
+    android:orientation="vertical"
+    android:padding="1dp"
+    android:translationX="5dp"
+    android:translationZ="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/cardview_light_background"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp">
+
+            <ImageView
+                android:id="@+id/labelcafe"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:srcCompat="@mipmap/ic_launcher_round" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_toEndOf="@+id/labelcafe"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/name_new"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Новый сотрудник"
+                    android:textColor="@android:color/background_dark"
+                    android:textSize="35sp" />
+
+                <TextView
+                    android:id="@+id/time_new"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="22 августа 12:39"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/image_new"
+            android:layout_width="500dp"
+            android:layout_height="500dp"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/description_new"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="jgbcccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            android:textSize="35sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/editText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="Добавить комментарий..."
+                android:inputType="textPersonName"
+                android:minHeight="80dp"
+                android:textSize="35sp" />
+
+            <ImageView
+                android:id="@+id/bt_review_new"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="right"
+                android:padding="5dp"
+                android:src="@drawable/otziv" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
