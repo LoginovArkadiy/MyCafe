@@ -18,6 +18,9 @@ public interface UserPostService {
    // @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST("/signup")
-    Call<String> loadUser(@Field("username") String username, @Field("password") String password, @Field("email") String email);
+    Call<String> loadUser(@Field("username") String username,
+                          @Field("password") String password,
+                          @Field("email") String email,
+                          @Field("role") int id);
     //Call<String> loadUser(@Body UserRegistrationBody user);
 }

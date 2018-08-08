@@ -37,6 +37,12 @@ public class WorkersRecycleAdapter extends RecyclerView.Adapter<WorkersRecycleAd
         holder.twName.setText(worker.getName());
         holder.twOffice.setText(worker.getWorkname());
         holder.layout.setVisibility(worker.isWorkNow() ? View.VISIBLE : View.INVISIBLE);
+        holder.view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return false;
+            }
+        });
     }
 
     @Override
@@ -60,9 +66,11 @@ public class WorkersRecycleAdapter extends RecyclerView.Adapter<WorkersRecycleAd
         ImageView imageView;
         TextView twName, twOffice;
         LinearLayout layout;
+        View view;
 
         public WorkerHolder(View view) {
             super(view);
+            this.view = view;
             imageView = view.findViewById(R.id.face_worker);
             twName = view.findViewById(R.id.name_worker);
             twOffice = view.findViewById(R.id.office);
