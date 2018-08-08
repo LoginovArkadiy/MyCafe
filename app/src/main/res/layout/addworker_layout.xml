@@ -13,7 +13,7 @@
         app:srcCompat="@mipmap/ic_launcher" />
 
     <EditText
-        android:id="@+id/name_edit"
+        android:id="@+id/email_worker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -23,7 +23,7 @@
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/work"
+        android:id="@+id/post_worker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -33,7 +33,7 @@
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/number"
+        android:id="@+id/role_worker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"

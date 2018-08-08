@@ -35,13 +35,12 @@ public class WorkersRecycleAdapter extends RecyclerView.Adapter<WorkersRecycleAd
         Worker worker = list.get(position);
         holder.imageView.setImageResource(worker.getId_drawable());
         holder.twName.setText(worker.getName());
-        holder.twOffice.setText(worker.getWorkname());
+        holder.twOffice.setText(worker.getPost());
         holder.layout.setVisibility(worker.isWorkNow() ? View.VISIBLE : View.INVISIBLE);
-        holder.view.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return false;
-            }
+        holder.view.setOnLongClickListener(v -> {
+            worker.changeWorkNow();
+            holder.layout.setVisibility(worker.isWorkNow() ? View.VISIBLE : View.INVISIBLE);
+            return true;
         });
     }
 
@@ -78,4 +77,6 @@ public class WorkersRecycleAdapter extends RecyclerView.Adapter<WorkersRecycleAd
 
         }
     }
+
+
 }

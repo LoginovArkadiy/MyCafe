@@ -1,13 +1,22 @@
 package com.develop.loginov.mycafe.workers;
 
 public class Worker {
-    private String name, workname;
+    private String name, post, email;
     private int id_drawable;
     private boolean isWorkNow;
 
-    public Worker(String name, String workname, int id_drawable, boolean isWorkNow) {
+    public Worker(String name, String post, int id_drawable, boolean isWorkNow) {
         this.name = name;
-        this.workname = workname;
+        this.post = post;
+        this.id_drawable = id_drawable;
+        this.isWorkNow = isWorkNow;
+
+    }
+
+    public Worker(String name, String post, String email, int id_drawable, boolean isWorkNow) {
+        this.name = name;
+        this.post = post;
+        this.email = email;
         this.id_drawable = id_drawable;
         this.isWorkNow = isWorkNow;
     }
@@ -16,8 +25,8 @@ public class Worker {
         return name;
     }
 
-    public String getWorkname() {
-        return workname;
+    public String getPost() {
+        return post;
     }
 
     public int getId_drawable() {
@@ -25,6 +34,11 @@ public class Worker {
     }
 
     public boolean isWorkNow() {
+        return isWorkNow;
+    }
+
+    public boolean changeWorkNow() {
+        isWorkNow = !isWorkNow;
         return isWorkNow;
     }
 }

@@ -44,6 +44,7 @@ public class ServerTask extends AsyncTask<Integer, Void, Response> {
     }
 
     private void signUp() {
+         UserPostService service = retrofit.create(UserPostService.class);
     }
 
     @Override
@@ -55,7 +56,6 @@ public class ServerTask extends AsyncTask<Integer, Void, Response> {
     protected void onPostExecute(Response response) {
         super.onPostExecute(response);
     }
-
 
 
 }

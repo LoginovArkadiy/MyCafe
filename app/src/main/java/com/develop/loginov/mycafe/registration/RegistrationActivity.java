@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.develop.loginov.mycafe.R;
+import com.develop.loginov.mycafe.server.Requests;
 import com.develop.loginov.mycafe.server.UserPostService;
 
 import java.io.IOException;
@@ -47,36 +48,15 @@ public class RegistrationActivity extends AppCompatActivity {
 
     @SuppressLint("StaticFieldLeak")
     class MyTask extends AsyncTask<String, String, String> {
-        private final String baseUrl = "http://62.109.23.83";
+
 
         @Override
         protected String doInBackground(String... strings) {
-            Retrofit retrofit = new Retrofit.Builder().baseUrl(baseUrl).addConverterFactory(GsonConverterFactory.create()).build();
+            Retrofit retrofit = new Retrofit.Builder().baseUrl(Requests.baseUrl).addConverterFactory(GsonConverterFactory.create()).build();
             UserPostService service = retrofit.create(UserPostService.class);
-
             Call<String> call = service.loadUser(username, password, email);
-           /* call.enqueue(new Callback<String>() {
-                @Override
-                public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
-                    if(response.isSuccessful()){
-                        Log.i("ANSWER", "sUCCESs");
-                        answerHTTP ="ОКККККК";
-                    } else {
-                        Log.i("ANSWER", "notsUCCESs");
-                    }
-                    answerHTTP = response.code() + "";
-                    if(response.code() == 200){
-                        answerHTTP = "ОК";
-                    }
-                }
 
-                @Override
-                public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
-                    Log.i("ANSWER", "NOOOO");
-                }
-            })*/
-
-          try {
+            try {
                 Response<String> userResponse = call.execute();
                 answerHTTP = userResponse.body();
             } catch (IOException e) {
