@@ -5,75 +5,209 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:layout_marginBottom="10dp"
-    android:layout_marginTop="10dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginTop="5dp"
     tools:context=".profile.ProfileFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:context=".profile.ProfileFragment">
 
         <!-- TODO: Update blank fragment layout -->
 
         <android.support.v7.widget.CardView
+            android:id="@+id/card_user_info"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:id="@+id/layout_user_info"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/login_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="left"
+                    android:text="Аркаша"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:id="@+id/email_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="left"
+                    android:text="+79277052780"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="30sp" />
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_toEndOf="@+id/tw_price"
+                    app:cardBackgroundColor="@color/colorPrimary"
+                    app:cardElevation="3dp">
+
+                    <Button
+                        android:id="@+id/bt_exit"
+                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="2dp"
+                        android:layout_weight="1"
+                        android:background="@android:color/background_light"
+                        android:text="Выйти"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="35sp" />
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_login"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:id="@+id/layout_login"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <EditText
+                    android:id="@+id/email_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:ems="10"
+                    android:hint="Email"
+                    android:inputType="textPersonName" />
+
+                <EditText
+                    android:id="@+id/pass_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:ems="10"
+                    android:hint="Пароль"
+                    android:inputType="textPersonName" />
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_toEndOf="@+id/tw_price"
+                    app:cardBackgroundColor="@color/colorAccent"
+                    app:cardElevation="3dp">
+
+                    <Button
+                        android:id="@+id/bt_login"
+                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="2dp"
+                        android:layout_weight="1"
+                        android:background="@android:color/background_light"
+                        android:text="Войти"
+                        android:textSize="35sp" />
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_sign_up"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
             app:cardElevation="2dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp">
+                android:padding="20dp">
 
-                <TextView
-                    android:id="@+id/name"
+                <EditText
+                    android:id="@+id/email_sign_up"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_marginTop="10dp"
-                    android:gravity="left"
-                    android:text="Аркаша"
-                    android:textSize="30sp" />
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:ems="10"
+                    android:hint="Email"
+                    android:inputType="textPersonName" />
 
-                <TextView
-                    android:id="@+id/role_worker"
+                <EditText
+                    android:id="@+id/login_sign_up"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="top"
-                    android:layout_marginTop="10dp"
-                    android:gravity="left"
-                    android:text="+79277052780"
-                    android:textSize="30sp" />
+                    android:ems="10"
+                    android:hint="Логин"
+                    android:inputType="textPersonName" />
 
-                <RelativeLayout
+                <EditText
+                    android:id="@+id/pass_sign_up"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:ems="10"
+                    android:hint="Пароль"
+                    android:inputType="textPersonName" />
+
+                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_toEndOf="@+id/tw_price"
+                    app:cardBackgroundColor="@color/colorAccent"
+                    app:cardElevation="3dp">
 
-                    <TextView
-                        android:id="@+id/sss"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="Количество бонусов"
-                        android:textSize="30sp" />
-
-                    <TextView
-                        android:id="@+id/count_bonus"
+                    <Button
+                        android:id="@+id/bt_sign_up"
+                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_toEndOf="@id/sss"
-                        android:text="10"
-                        android:textSize="30sp" />
-                </RelativeLayout>
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="2dp"
+                        android:layout_weight="1"
+                        android:background="@android:color/background_light"
+                        android:text="Регистрация"
+                        android:textSize="35sp" />
+                </android.support.v7.widget.CardView>
 
             </LinearLayout>
 
@@ -82,7 +216,8 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
             app:cardElevation="2dp">
 
             <FrameLayout

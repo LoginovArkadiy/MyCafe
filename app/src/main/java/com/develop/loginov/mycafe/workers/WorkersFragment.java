@@ -2,25 +2,18 @@ package com.develop.loginov.mycafe.workers;
 
 
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import com.develop.loginov.mycafe.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class WorkersFragment extends Fragment {
@@ -42,25 +35,37 @@ public class WorkersFragment extends Fragment {
     }
 
     private void initList() {
-
-            /*  ListView listView = (ListView) rootView.findViewById(R.id.list_workers);
-        assert context != null;
-        WorkersAdapter adapter = new WorkersAdapter(context);  */
-
         RecyclerView listView = rootView.findViewById(R.id.list_workers);
         listView.setLayoutManager(new LinearLayoutManager(context, 1, false));
         WorkersRecycleAdapter adapter = new WorkersRecycleAdapter();
         listView.setAdapter(adapter);
-        List<Worker> workerList = new ArrayList<>();
 
-        workerList.add(new Worker("Барт", "Бармен", R.drawable.bart, true));
-        workerList.add(new Worker("Гомер", "Официант", R.drawable.gomer, true));
-        workerList.add(new Worker("Мардж", "Администратор", R.drawable.wife, true));
-        workerList.add(new Worker("Лиза", "Бармен", R.drawable.liza, false));
-        workerList.add(new Worker("Нед", "Официант", R.drawable.ned, true));
-        workerList.add(new Worker("Бёрнс", "Администратор", R.drawable.mrburns, false));
-        workerList.add(new Worker("Милхаус", "Кассир", R.drawable.milhaus, true));
-        for (Worker w : workerList) {
+        List<Worker> workers = new ArrayList<>();
+/*
+        WorkersGetTask workersGetTask = new WorkersGetTask();
+        workersGetTask.execute();
+        Worker[] workers = new Worker[0];
+        try {
+            workers = workersGetTask.get(1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        for (Worker w : workers) {
+            adapter.addWorker(w);
+        }
+*/
+        workers.add(new Worker("Барт", "Бармен", R.drawable.bart, true));
+        workers.add(new Worker("Гомер", "Официант", R.drawable.gomer, true));
+        workers.add(new Worker("Мардж", "Администратор", R.drawable.wife, true));
+        workers.add(new Worker("Лиза", "Бармен", R.drawable.liza, false));
+        workers.add(new Worker("Нед", "Официант", R.drawable.ned, true));
+        workers.add(new Worker("Бёрнс", "Администратор", R.drawable.mrburns, false));
+        workers.add(new Worker("Милхаус", "Кассир", R.drawable.milhaus, true));
+        for (Worker w : workers) {
             adapter.addWorker(w);
         }
     }

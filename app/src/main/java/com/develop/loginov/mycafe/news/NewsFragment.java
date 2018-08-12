@@ -27,33 +27,34 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NewsFragment extends Fragment {
 
+    NewsAdapter adapter;
 
     public NewsFragment() {
-        // Required empty public constructor
     }
 
-    /*String answerHTTP;
-    String login, pass;*/ Context context;
+    private Context context;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_news, container, false);
         context = getContext();
 
-        RecyclerView list = view.findViewById(R.id.list_news);
-        list.setLayoutManager(new LinearLayoutManager(context, LinearLayout.VERTICAL, false));
-        NewsAdapter adapter = new NewsAdapter();
-        list.setAdapter(adapter);
+        RecyclerView recyclerView = view.findViewById(R.id.list_news);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayout.VERTICAL, false));
+        adapter = new NewsAdapter();
+        recyclerView.setAdapter(adapter);
+        initList();
+        return view;
+    }
+
+    private void initList() {
         adapter.addNew(new New("Новый сотрудник", "Знакомьтесь - наш бармен Барт!)", R.drawable.bart, "5 августа 14:02"));
         adapter.addNew(new New("АКЦИЯ", "Если Вы Егор и ваш друг Никита, то вам хорошо!", R.drawable.friends, "7 августа 14:02"));
         adapter.addNew(new New("У нас новый табак", "Смотрите какая красивая лэйбл", R.drawable.tabac, "10 августа 14:02"));
         adapter.addNew(new New("Новый сотрудник", "Знакомьтесь - наш менджер Мардж!)", R.drawable.wife, "12 августа 14:02"));
         adapter.addNew(new New("АКЦИЯ", "1+1 = 2, покупаете наш Бургер Arifmetic и наш официант поможет вам разобраться с домашним заданием", R.drawable.stock, "12 августа 14:02"));
 
-        return view;
     }
-
 
 
 }

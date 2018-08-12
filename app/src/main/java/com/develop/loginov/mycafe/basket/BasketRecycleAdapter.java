@@ -23,7 +23,7 @@ public class BasketRecycleAdapter extends RecyclerView.Adapter<BasketRecycleAdap
     private ArrayList<Product> list;
     private Context context;
 
-    public BasketRecycleAdapter() {
+    BasketRecycleAdapter() {
         list = new ArrayList<>();
     }
 

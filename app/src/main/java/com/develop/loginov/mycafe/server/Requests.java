@@ -1,14 +1,21 @@
 package com.develop.loginov.mycafe.server;
 
+import android.content.Context;
+import android.widget.Toast;
+
 public class Requests {
     public final static String baseUrl = "http://62.109.23.83";
-    static final int POST_WORK_TIME = 0;
-    static final int POST_PRODUCT = 1;
-    static final int GET_PRODUCTS_BY_TYPE = 2;
-    static final int GET_ALL_PRODUCTS = 3;
-    static final int SIGN_UP = 4;
-    static final int SIGN_IN = 5;
-    static final int POST_WORKER = 6;
-    static final int GET_ALL_WORKERS = 7;
 
+
+    public static void makeToastNotification(Context context, Integer status) {
+        if (status == null) {
+            status = -1;
+        }
+        String s = status == 200 ? "OK" : (status < 500 ? "Что -то пошло не так" : "Что-то на сервере пошлоне так");
+        Toast.makeText(context, s + "\n" + status, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void makeToastNotification(Context context, String s) {
+        Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
+    }
 }

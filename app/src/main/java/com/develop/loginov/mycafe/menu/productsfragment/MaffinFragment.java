@@ -38,12 +38,6 @@ public class MaffinFragment extends Fragment {
     }
 
     private void initList() {
-      /*
-        ListView listView = (ListView) rootView.findViewById(R.id.list_product);
-        ProductAdapter adapter = new ProductAdapter(Objects.requireNonNull(getContext()));
-        listView.setAdapter(adapter);
-        */
-
         RecyclerView listView = rootView.findViewById(R.id.list_product);
         ProductRecycleAdapter adapter = new ProductRecycleAdapter();
         listView.setLayoutManager(new LinearLayoutManager(context, 1, false));
@@ -53,14 +47,14 @@ public class MaffinFragment extends Fragment {
 
 
     private List<Product> createBeginProducts() {
-        List<Product> list = new ArrayList<>();
+        List<Product> products = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            list.add(new Product("РРРРРР", "Порычим на 200 ррррублей?", R.drawable.maffin, (int) (Math.random() * 500 + 150), (int) (Math.random() * 500 + 150)));
-            list.add(new Product("Милашка", "За твоим столиком будет милый хотя бы кекс", R.drawable.maffintwo, (int) (Math.random() * 500 + 150), (int) (Math.random() * 500 + 150)));
-            list.add(new Product("Хнык", "Не плачь - не ты одна жирная", R.drawable.maffinthree, (int) (Math.random() * 500 + 150), (int) (Math.random() * 500 + 150)));
-            list.add(new Product("Angryer", "Не злись, в следующий раз победим)", R.drawable.maffinfour, (int) (Math.random() * 500 + 150), (int) (Math.random() * 500 + 150)));
+            products.add(new Product("РРРРРР", "Порычим на 200 ррррублей?", R.drawable.maffin, (int) (Math.random() * 500 + 150), (int) (Math.random() * 500 + 150)));
+            products.add(new Product("Милашка", "За твоим столиком будет милый хотя бы кекс", R.drawable.maffintwo, (int) (Math.random() * 500 + 150), (int) (Math.random() * 500 + 150)));
+            products.add(new Product("Хнык", "Не плачь - не ты одна жирная", R.drawable.maffinthree, (int) (Math.random() * 500 + 150), (int) (Math.random() * 500 + 150)));
+            products.add(new Product("Angryer", "Не злись, в следующий раз победим)", R.drawable.maffinfour, (int) (Math.random() * 500 + 150), (int) (Math.random() * 500 + 150)));
         }
-        return list;
+        return products;
     }
 
 

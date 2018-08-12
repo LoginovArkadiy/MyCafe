@@ -10,9 +10,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.develop.loginov.mycafe.R;
+import com.develop.loginov.mycafe.server.workers.WorkerTimePostTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class WorkersRecycleAdapter extends RecyclerView.Adapter<WorkersRecycleAdapter.WorkerHolder> {
 
@@ -38,8 +40,20 @@ public class WorkersRecycleAdapter extends RecyclerView.Adapter<WorkersRecycleAd
         holder.twOffice.setText(worker.getPost());
         holder.layout.setVisibility(worker.isWorkNow() ? View.VISIBLE : View.INVISIBLE);
         holder.view.setOnLongClickListener(v -> {
-            worker.changeWorkNow();
-            holder.layout.setVisibility(worker.isWorkNow() ? View.VISIBLE : View.INVISIBLE);
+
+           /* WorkerTimePostTask task = new WorkerTimePostTask();
+            task.execute(worker.isWorkNow() ? 1 : 0, worker.getId());
+            try {
+                if (task.get().length() > 0 && !task.get().equals("ОШИБКА")) {
+                    worker.changeWorkNow();
+                    holder.layout.setVisibility(worker.isWorkNow() ? View.VISIBLE : View.INVISIBLE);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }*/
+
             return true;
         });
     }
@@ -49,7 +63,7 @@ public class WorkersRecycleAdapter extends RecyclerView.Adapter<WorkersRecycleAd
         return list.size();
     }
 
-    public void addWorker(Worker worker) {
+    void addWorker(Worker worker) {
         if (worker.isWorkNow()) {
             list.add(0, worker);
         } else list.add(worker);
@@ -67,7 +81,7 @@ public class WorkersRecycleAdapter extends RecyclerView.Adapter<WorkersRecycleAd
         LinearLayout layout;
         View view;
 
-        public WorkerHolder(View view) {
+        WorkerHolder(View view) {
             super(view);
             this.view = view;
             imageView = view.findViewById(R.id.face_worker);

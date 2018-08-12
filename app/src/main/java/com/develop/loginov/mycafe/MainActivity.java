@@ -20,7 +20,7 @@ import com.develop.loginov.mycafe.basket.BasketRecycleAdapter;
 import com.develop.loginov.mycafe.menu.MenuFragment;
 import com.develop.loginov.mycafe.news.NewsFragment;
 import com.develop.loginov.mycafe.profile.ProfileFragment;
-import com.develop.loginov.mycafe.registration.RegistrationActivity;
+import com.develop.loginov.mycafe.reviews.ReviewActivity;
 import com.develop.loginov.mycafe.workers.WorkersFragment;
 
 import java.util.HashMap;
@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
     BasketFragment basketFragment;
     Context context;
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,8 +42,8 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        navigation.setSelectedItemId(R.id.navigation_home);
-        getSupportFragmentManager().beginTransaction().add(R.id.rootfragment, new ProfileFragment()).commit();
+        navigation.setSelectedItemId(R.id.navigation_workers);
+        getSupportFragmentManager().beginTransaction().add(R.id.rootfragment, new WorkersFragment()).commit();
         mapProducts = new HashMap<>();
         ADMIN = false;
         context = this;
@@ -55,11 +54,11 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.contact_item:
-               startActivity(new Intent().setClass(context, RegistrationActivity.class));
                 break;
             case R.id.about_item:
                 break;
             case R.id.reviews_item:
+                startActivity(new Intent(context, ReviewActivity.class));
                 break;
             case R.id.admin:
                 ADMIN = !ADMIN;
@@ -68,7 +67,8 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
                 else item.setTitle("Админ");
                 changeFragment(new NewsFragment());
                 navigation.setSelectedItemId(R.id.navigation_news);
-        } return true;
+        }
+        return true;
     }
 
     @Override

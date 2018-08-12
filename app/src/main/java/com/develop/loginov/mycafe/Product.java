@@ -1,10 +1,15 @@
 package com.develop.loginov.mycafe;
+
+import android.graphics.Bitmap;
+
 public class Product {
     private static final int LENGTH_DESCRIPTION = 40;
 
     private String name, description, edition;
-    private int id, price, weight;
+    private int id, price, weight, type;
     private int count;
+    private byte[] bytes;
+    private Bitmap bitmap;
 
 
     public Product(String name, String description, int id, int price, int weight) {
@@ -15,8 +20,21 @@ public class Product {
         this.weight = weight;
         count = 0;
         edition = "";
+        type = 0;
     }
 
+    public Product(String name, String description, int price, int weight, int type, Bitmap bitmap) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.weight = weight;
+        this.type = type;
+        this.bitmap = bitmap;
+    }
+
+    public int getType() {
+        return type;
+    }
 
     @Override
     public int hashCode() {
@@ -68,5 +86,16 @@ public class Product {
 
     public int getCount() {
         return count;
+    }
+
+    public byte[] getBytes() {
+        if (bytes == null) bytes = MyBitmapConverter.getByteArrayFromBitmap(bitmap);
+        return bytes;
+    }
+
+    public Bitmap getBitmap() {
+        if (bitmap == null) bitmap = MyBitmapConverter.getBitmapfromByteArray(bytes);
+
+        return bitmap;
     }
 }
