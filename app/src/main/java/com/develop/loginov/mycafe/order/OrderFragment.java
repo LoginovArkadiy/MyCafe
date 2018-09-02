@@ -1,10 +1,8 @@
 package com.develop.loginov.mycafe.order;
 
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -19,8 +17,6 @@ import com.develop.loginov.mycafe.MainActivity;
 import com.develop.loginov.mycafe.R;
 import com.develop.loginov.mycafe.order.basket.BasketFragment;
 import com.develop.loginov.mycafe.order.hall.HallFragment;
-import com.develop.loginov.mycafe.order.hall.TableView;
-import com.develop.loginov.mycafe.order.hall.WallView;
 
 public class OrderFragment extends Fragment {
 
@@ -38,8 +34,7 @@ public class OrderFragment extends Fragment {
     HallFragment hallFragment;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_order, container, false);
         this.inflater = inflater;
         context = getContext();
@@ -56,7 +51,8 @@ public class OrderFragment extends Fragment {
     public void setHallFragment(HallFragment hallFragment) {
         this.hallFragment = hallFragment;
         hallFragment.setArguments(args);
-        rootView.findViewById(R.id.hall_buttons_layout).setVisibility(View.VISIBLE);
+        if (MainActivity.ADMIN)
+            rootView.findViewById(R.id.hall_buttons_layout).setVisibility(View.VISIBLE);
         getChildFragmentManager().beginTransaction().replace(R.id.order_container, hallFragment).commit();
     }
 
@@ -81,36 +77,30 @@ public class OrderFragment extends Fragment {
     private void createTableDialog() {
         AlertDialog.Builder ad = new AlertDialog.Builder(context);
         View view = inflater.inflate(R.layout.dialog_table, null);
-        ad.setTitle("Новый столик")
-                .setNegativeButton("Отмена", (dialogInterface, i) -> {
-                    tableDialog.cancel();
-                })
-                .setPositiveButton("Ок", (dialogInterface, i) -> {
-                    String number = ((EditText) view.findViewById(R.id.edit_number_table)).getText().toString();
-                    String count = ((EditText) view.findViewById(R.id.edit_count_people)).getText().toString();
-                    if (number.length() * count.length() > 0) {
-                        hallFragment.addTable(number, count);
-                        tableDialog.cancel();
-                    }
-                    Toast.makeText(context, "Заполните все ячейки!", Toast.LENGTH_SHORT).show();
-                })
-                .setCancelable(true)
-                .setView(view);
+        ad.setTitle("Новый столик").setNegativeButton("Отмена", (dialogInterface, i) -> {
+            tableDialog.cancel();
+        }).setPositiveButton("Ок", (dialogInterface, i) -> {
+            String number = ((EditText) view.findViewById(R.id.edit_number_table)).getText().toString();
+            String count = ((EditText) view.findViewById(R.id.edit_count_people)).getText().toString();
+            if (number.length() * count.length() > 0) {
+                hallFragment.addTable(number, count);
+                tableDialog.cancel();
+                return;
+            }
+            Toast.makeText(context, "Заполните все ячейки!", Toast.LENGTH_SHORT).show();
+        }).setCancelable(true).setView(view);
         tableDialog = ad.create();
     }
 
     private void createWallDialog() {
         AlertDialog.Builder ad = new AlertDialog.Builder(context);
-        ad.setTitle("Новый столик")
-                .setNegativeButton("Горизонтальная", (dialogInterface, i) -> {
-                    hallFragment.addWall(1);
-                    tableDialog.cancel();
-                })
-                .setPositiveButton("Вертикальная", (dialogInterface, i) -> {
-                    hallFragment.addWall(0);
-                    tableDialog.cancel();
-                })
-                .setCancelable(true);
+        ad.setTitle("Новая стена").setNegativeButton("Горизонтальная", (dialogInterface, i) -> {
+            hallFragment.addWall(1);
+            tableDialog.cancel();
+        }).setPositiveButton("Вертикальная", (dialogInterface, i) -> {
+            hallFragment.addWall(0);
+            tableDialog.cancel();
+        }).setCancelable(true);
         wallDialog = ad.create();
     }
 

@@ -21,5 +21,5 @@
         android:layout_marginTop="5dp"
         android:ems="10"
         android:hint="Количество сидящих мест"
-        android:inputType="textPersonName" />
+        android:inputType="number" />
 </LinearLayout>

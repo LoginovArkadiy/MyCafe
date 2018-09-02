@@ -23,9 +23,7 @@ import com.develop.loginov.mycafe.Product;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class BasketFragment extends Fragment {
     public static final String LIST_PRODUCTS = "list_products";
     static TextView twAllCast;
@@ -88,7 +86,7 @@ public class BasketFragment extends Fragment {
 
     @SuppressLint("SetTextI18n")
     static void changeBasket(int cast) {
-        twAllCast.setText("Стоимость: " + cast + " руб");
+        twAllCast.setText(cast + " руб");
     }
 
 

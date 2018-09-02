@@ -22,11 +22,11 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TabacFragment extends Fragment {
+public class TabaccoFragment extends Fragment {
     private View rootView;
     private Context context;
 
-    public TabacFragment() {
+    public TabaccoFragment() {
         // Required empty public constructor
     }
 

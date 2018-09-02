@@ -6,7 +6,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
+import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -14,14 +16,15 @@ import com.develop.loginov.mycafe.R;
 
 
 public class TableView extends View implements MyView {
-    private final int d = 20;
-    int xCircle, yCircle;
+    private final int d = 30;
     Rect dst, src;
-    String number;
+    private String number, countPeople;
     Bitmap bitmap;
     float textSize = 100;
     int type, width, height;
     Paint paint;
+    long preTime;
+    MyCircle circle;
 
     public TableView(Context context) {
         super(context);
@@ -34,8 +37,8 @@ public class TableView extends View implements MyView {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
 
-        xCircle = -100;
-        yCircle = -100;
+        circle = new MyCircle(context);
+        preTime = -1;
     }
 
     @Override
@@ -44,8 +47,8 @@ public class TableView extends View implements MyView {
         paint.setColor(Color.WHITE);
         paint.setTextSize(textSize);
         canvas.drawText(number, dst.centerX() - paint.measureText(number) / 2, dst.centerY() + textSize / 3, paint);
-        paint.setColor(Color.GRAY);
-        canvas.drawCircle(xCircle, yCircle, 20, paint);
+        paint.setColor(Color.LTGRAY);
+        circle.draw(canvas);
     }
 
     @Override
@@ -56,6 +59,9 @@ public class TableView extends View implements MyView {
         invalidate();
     }
 
+    public long getPreTime() {
+        return preTime;
+    }
 
     @Override
     public void changeMas(float x0, float y0, int angle) {
@@ -82,23 +88,26 @@ public class TableView extends View implements MyView {
         }
         width = dst.width();
         height = dst.height();
-        xCircle = x;
-        yCircle = y;
+        circle.setPoint(x, y);
         invalidate();
     }
 
-    public void setNumber(int number) {
-        this.number = Integer.toString(number);
+    public TableView setNumber(String number) {
+        this.number = number;
+        return this;
     }
 
     @Override
     public void stop() {
-        xCircle = -100;
-        yCircle = -100;
+        circle.setPoint(-10000, -10000);
     }
 
     protected void changeWidth(double mas) {
 
+    }
+
+    public void setPreTime(long preTime) {
+        this.preTime = preTime;
     }
 
     protected void changeHeight(double mas) {
@@ -112,8 +121,18 @@ public class TableView extends View implements MyView {
     }
 
     @Override
+    public void setMyOnClickListener(OnClickListener listener) {
+        setOnClickListener(listener);
+    }
+
+    @Override
     public void drawing(Canvas canvas) {
         draw(canvas);
+    }
+
+    @Override
+    public Point getCenter() {
+        return new Point((dst.left + dst.right) / 2, (dst.bottom + dst.top) / 2);
     }
 
     private int getAngle(int x, int y) {
@@ -129,7 +148,14 @@ public class TableView extends View implements MyView {
         return 0;
     }
 
+    public TableView setCountPeople(String countPeople) {
+        this.countPeople = countPeople;
+        return this;
+    }
 
 
-
+    @Override
+    public void setOnLongClickListener(@Nullable OnLongClickListener l) {
+        super.setOnLongClickListener(l);
+    }
 }

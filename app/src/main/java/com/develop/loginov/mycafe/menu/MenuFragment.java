@@ -14,7 +14,7 @@ import com.develop.loginov.mycafe.Product;
 import com.develop.loginov.mycafe.R;
 import com.develop.loginov.mycafe.menu.productsfragment.MaffinFragment;
 import com.develop.loginov.mycafe.menu.productsfragment.PizzaFragment;
-import com.develop.loginov.mycafe.menu.productsfragment.TabacFragment;
+import com.develop.loginov.mycafe.menu.productsfragment.TabaccoFragment;
 
 import java.util.HashMap;
 
@@ -44,7 +44,7 @@ public class MenuFragment extends Fragment {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
         adapter.addPage(new PizzaFragment(), "Пиццы");
         adapter.addPage(new MaffinFragment(), "Маффины");
-        adapter.addPage(new TabacFragment(), "Табаки");
+        adapter.addPage(new TabaccoFragment(), "Табаки");
        /* adapter.addPage(new PizzaFragment(), "Напитки");
         adapter.addPage(new PizzaFragment(), "Десерты");
         adapter.addPage(new PizzaFragment(), "Табаки");

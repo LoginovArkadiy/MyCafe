@@ -48,6 +48,7 @@ public class BasketRecycleAdapter extends RecyclerView.Adapter<BasketRecycleAdap
         holder.imageView.setImageResource(product.getId());
 
         holder.seekBar.setProgress(product.getCount());
+        BasketFragment.changeBasket(getAllCast());
         holder.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

@@ -25,15 +25,13 @@ import com.develop.loginov.mycafe.menu.MenuFragment;
 import com.develop.loginov.mycafe.news.NewsFragment;
 import com.develop.loginov.mycafe.order.hall.HallFragment;
 import com.develop.loginov.mycafe.profile.ProfileFragment;
+import com.develop.loginov.mycafe.reviews.ReviewActivity;
 import com.develop.loginov.mycafe.workers.WorkersFragment;
 
 import java.util.HashMap;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements OnAddProductListener,
-        BasketFragment.OnClearBasketListener,
-        BasketRecycleAdapter.OnChangeCountProductListener,
-        BasketFragment.OnCreateOrderListener {
+public class MainActivity extends AppCompatActivity implements OnAddProductListener, BasketFragment.OnClearBasketListener, BasketRecycleAdapter.OnChangeCountProductListener, BasketFragment.OnCreateOrderListener {
 
     HashMap<Product, Integer> mapProducts;
     public static boolean ADMIN;
@@ -50,9 +48,9 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        navigation.setSelectedItemId(R.id.navigation_menu);
-        getSupportFragmentManager().beginTransaction().add(R.id.rootfragment, new MenuFragment()).commit();
-        getSupportFragmentManager().beginTransaction().replace(R.id.rootfragment, new NewsFragment()).commit();
+        navigation.setSelectedItemId(R.id.navigation_home);
+        getSupportFragmentManager().beginTransaction().add(R.id.rootfragment, new WorkersFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootfragment, new ProfileFragment()).commit();
         mapProducts = new HashMap<>();
         ADMIN = false;
         context = this;
@@ -67,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
             case R.id.about_item:
                 break;
             case R.id.reviews_item:
+                startActivity(new Intent().setClass(context, ReviewActivity.class));
                 break;
             case R.id.admin:
                 ADMIN = !ADMIN;
@@ -111,6 +110,11 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
         return false;
     });
 
+    @Override
+    public void onBackPressed() {
+        changeFragment(new NewsFragment());
+        navigation.setSelectedItemId(R.id.navigation_news);
+    }
 
     private void changeFragment(Fragment fragment) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -147,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
     @Override
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
-        if(orderFragment != null) orderFragment.clear();
+        if (orderFragment != null) orderFragment.clear();
     }
 
 
