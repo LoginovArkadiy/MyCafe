@@ -13,7 +13,7 @@ public interface WorkerService {
     Call<String> loadWorker(@Field("id") int id,
                          @Field("role") int role,
                          @Field("post") String post,
-                         @Field("image") byte[] image
+                         @Field("imageId") int imageId
     );
 
     @GET("/workers")

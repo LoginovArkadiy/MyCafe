@@ -2,8 +2,11 @@ package com.develop.loginov.mycafe.server.products;
 
 import com.develop.loginov.mycafe.Product;
 import com.develop.loginov.mycafe.server.AnswerBody;
+import com.develop.loginov.mycafe.server.Requests;
 
 import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -14,13 +17,14 @@ import retrofit2.http.Query;
 
 public interface ProductService {
     //добавляет новый продукт в меню
+    @FormUrlEncoded
     @POST("/menu")
-    Call<String> loadProduct(@Field("name") String name,
+    Call<AnswerBody> loadProduct(@Field("name") String name,
                              @Field("description") String description,
                              @Field("price") int price,
                              @Field("weight") int weight,
                              @Field("type") int type,
-                             @Field("image") byte[] image
+                             @Field("imageId") int imageId
     );
 
     //все продукты
@@ -37,7 +41,7 @@ public interface ProductService {
 
     @FormUrlEncoded
     @POST("/menu/{id}/edit/image")
-    Call<AnswerBody> setImage(@Path("id") int id, @Field("imageId") int imageId);
+    Call<AnswerBody> setImage(@Path("id") int id, @Field("image") byte[] image);
 
     //все типы продуктов
     @GET("/menuSections")
@@ -46,4 +50,9 @@ public interface ProductService {
     //добавление нового типа
     @POST("/menuSections")
     Call<AnswerBody> addMenuSections(@Field("type") int type);
+
+
+    Retrofit retrofit = new Retrofit.Builder().baseUrl(Requests.baseUrl).addConverterFactory(GsonConverterFactory.create()).build();
+
+
 }

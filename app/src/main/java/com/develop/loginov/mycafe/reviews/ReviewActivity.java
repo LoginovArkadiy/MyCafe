@@ -1,21 +1,28 @@
 package com.develop.loginov.mycafe.reviews;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.develop.loginov.mycafe.R;
 import com.develop.loginov.mycafe.server.Requests;
 import com.develop.loginov.mycafe.server.review.ReviewPostTask;
 import com.develop.loginov.mycafe.server.review.ReviewsGetTask;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -37,11 +44,19 @@ public class ReviewActivity extends AppCompatActivity {
 
     private void initView() {
         EditText editTextReview = findViewById(R.id.edit_review);
+
+
         findViewById(R.id.bt_post_review).setOnClickListener(view -> {
             String text = editTextReview.getText().toString();
-            String date = "22 августа";
+            Calendar c = Calendar.getInstance();
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String strDate = sdf.format(c.getTime());
+            Toast toast = Toast.makeText(context, strDate, Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP, 0, 0);
+            toast.show();
+
             ReviewPostTask task = new ReviewPostTask();
-            task.execute(text, date);
+            task.execute(text, strDate);
             try {
                 Requests.makeToastNotification(context, task.get(500, TimeUnit.MILLISECONDS).status);
             } catch (InterruptedException e) {

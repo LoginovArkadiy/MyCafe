@@ -51,7 +51,7 @@
         app:cardElevation="3dp">
 
         <Button
-            android:id="@+id/add_edit"
+            android:id="@+id/bt_post_worker"
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

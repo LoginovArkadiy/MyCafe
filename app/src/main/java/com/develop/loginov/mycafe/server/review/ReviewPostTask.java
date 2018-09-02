@@ -18,10 +18,13 @@ public class ReviewPostTask extends AsyncTask<String, Void, AnswerBody> {
         AnswerBody answerBody = new AnswerBody();
         answerBody.status = -1;
         try {
-            answerBody = call.execute().body();
+            AnswerBody answerBody1 = call.execute().body();
+            return answerBody1 == null ? answerBody : answerBody1;
         } catch (IOException e) {
             e.printStackTrace();
+
         }
+
         return answerBody;
     }
 }

@@ -1,4 +1,4 @@
-package com.develop.loginov.mycafe.basket;
+package com.develop.loginov.mycafe.order.basket;
 
 
 import android.annotation.SuppressLint;
@@ -9,21 +9,19 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.develop.loginov.mycafe.MainActivity;
 import com.develop.loginov.mycafe.R;
 import com.develop.loginov.mycafe.Product;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,17 +43,22 @@ public class BasketFragment extends Fragment {
         Bundle args = getArguments();
         HashMap<Product, Integer> hashMap = (HashMap<Product, Integer>) args.getSerializable(LIST_PRODUCTS);
         products = createList(hashMap);
+        setListeners();
         initList();
 
+        return rootView;
+    }
+
+    private void setListeners() {
         Button bCreateOrder = rootView.findViewById(R.id.create_order);
         bCreateOrder.setOnClickListener(v -> {
             Toast.makeText(context, "Мы начали готовить ваш заказ", Toast.LENGTH_SHORT).show();
+            ((OnCreateOrderListener) context).createOrder();
         });
-        bCreateOrder.setOnTouchListener(onTouchListener);
+        bCreateOrder.setOnTouchListener(MainActivity.onTouchListener);
         Button clearBasket = rootView.findViewById(R.id.clear_button);
-        clearBasket.setOnTouchListener(onTouchListener);
+        clearBasket.setOnTouchListener(MainActivity.onTouchListener);
         clearBasket.setOnClickListener(v -> clear());
-        return rootView;
     }
 
     private void initList() {
@@ -82,21 +85,6 @@ public class BasketFragment extends Fragment {
         listener.clearBasket();
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    View.OnTouchListener onTouchListener = (v, event) -> {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                v.setBackgroundResource(R.color.ltgrey);
-                break;
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                v.setBackgroundResource(R.color.white);
-                break;
-        }
-
-        return false;
-    };
-
 
     @SuppressLint("SetTextI18n")
     static void changeBasket(int cast) {
@@ -106,5 +94,9 @@ public class BasketFragment extends Fragment {
 
     public interface OnClearBasketListener {
         void clearBasket();
+    }
+
+    public interface OnCreateOrderListener {
+        void createOrder();
     }
 }

@@ -17,7 +17,7 @@ public interface NewsService {
     @POST("/news/")
     Call<AnswerBody> loadNew(@Field("title") String title,
                              @Field("description") String description,
-                             @Field("image") byte[] image,
+                             @Field("imageId") int imageId,
                              @Field("time") String time);
 
     //все новости

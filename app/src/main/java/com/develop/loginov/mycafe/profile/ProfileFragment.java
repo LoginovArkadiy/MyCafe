@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -248,7 +249,7 @@ public class ProfileFragment extends Fragment {
         setChangeSrcImageViewClickListener(workerView.findViewById(R.id.image_add_worker));
         setChangeSrcImageViewClickListener(newsView.findViewById(R.id.image_edit));
 
-        productView.findViewById(R.id.add_edit).setOnClickListener(v -> {
+        productView.findViewById(R.id.bt_post_product).setOnClickListener(v -> {
             String name = getTextEdit(productView, R.id.name_add_product);
             String weight = getTextEdit(productView, R.id.weight_add_product);
             String price = getTextEdit(productView, R.id.price_add_product);
@@ -259,7 +260,7 @@ public class ProfileFragment extends Fragment {
 
         });
 
-        workerView.findViewById(R.id.add_edit).setOnClickListener(v -> {
+        workerView.findViewById(R.id.bt_post_worker).setOnClickListener(v -> {
             String email = getTextEdit(workerView, R.id.email_worker);
             String post = getTextEdit(workerView, R.id.post_worker);
             String role = getTextEdit(workerView, R.id.role_worker);
@@ -267,7 +268,7 @@ public class ProfileFragment extends Fragment {
         });
 
 
-        newsView.findViewById(R.id.add_edit).setOnClickListener(v -> {
+        newsView.findViewById(R.id.bt_post_news).setOnClickListener(v -> {
             String name = getTextEdit(newsView, R.id.title_add_news);
             String description = getTextEdit(newsView, R.id.description_add_news);
             new NewPostTask().execute(new New(name, description, "22 августа ", bitmap));
@@ -318,8 +319,9 @@ public class ProfileFragment extends Fragment {
     }
 
     public void setImage(Bitmap bitmap) {
-        nowImageView.setImageBitmap(bitmap);
-        this.bitmap = bitmap;
+
+        this.bitmap = Bitmap.createScaledBitmap(bitmap, 144, 144, true);
+        nowImageView.setImageBitmap(this.bitmap);
     }
 
     @Override

@@ -5,6 +5,8 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 
 import com.develop.loginov.mycafe.server.Requests;
+import com.develop.loginov.mycafe.server.uploads.UploadPostAnswerBody;
+import com.develop.loginov.mycafe.server.uploads.UploadsService;
 import com.develop.loginov.mycafe.server.user.User;
 import com.develop.loginov.mycafe.server.user.UserService;
 import com.develop.loginov.mycafe.workers.Worker;
@@ -18,27 +20,32 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class WorkerPostTask extends AsyncTask<Worker, Void, String> {
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected String doInBackground(Worker... workers) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Requests.baseUrl).addConverterFactory(GsonConverterFactory.create()).build();
-        UserService service1 = retrofit.create(UserService.class);
-        WorkerService service2 = retrofit.create(WorkerService.class);
-        Call<User> callId = service1.getUser(workers[0].getEmail());
+        UserService userService = retrofit.create(UserService.class);
+        WorkerService workerService = retrofit.create(WorkerService.class);
+        UploadsService uploadsService = retrofit.create(UploadsService.class);
+
+        int role = workers[0].getRole();
+        String post = workers[0].getPost();
+        byte[] image = workers[0].getBytes();
+
+        Call<User> userCall = userService.getUser(workers[0].getEmail());
         try {
-            int id = Objects.requireNonNull(callId.execute().body()).id;
-            Call<String> callPostWorker = service2.loadWorker(id, workers[0].getRole(), workers[0].getPost(), workers[0].getBytes());
+            User user = userCall.execute().body();
+            assert user != null;
+            int id = user.id;
+            String name = user.username;
+
+            Call<UploadPostAnswerBody> pictureCall = uploadsService.loadPicture(image, name, ".png");
+            int imageId = Objects.requireNonNull(pictureCall.execute().body()).imageId;
+
+            Call<String> callPostWorker = workerService.loadWorker(id, role, post, imageId);
             return callPostWorker.execute().body();
         } catch (IOException e) {
             return "ОШИБКА";
         }
     }
-
-    @Override
-    protected void onPostExecute(String s) {
-        super.onPostExecute(s);
-    }
-
 
 }
