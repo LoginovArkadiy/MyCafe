@@ -12,7 +12,7 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:contentDescription="ffff"
-        app:srcCompat="@drawable/ic_launcher_background" />
+        android:src="@drawable/ic_launcher_background" />
 
     <EditText
         android:id="@+id/title_add_news"
