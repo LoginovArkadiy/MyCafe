@@ -13,35 +13,30 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.develop.reapps.mycafe.R;
-import com.develop.reapps.mycafe.server.Requests;
-import com.develop.reapps.mycafe.server.review.ReviewPostTask;
+import com.develop.reapps.mycafe.server.review.ReviewClient;
+import com.develop.reapps.mycafe.server.user.UserClient;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 
 public class ReviewActivity extends AppCompatActivity {
 
     private Context context;
+    private ReviewClient task;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
         context = this;
+        task = new ReviewClient(context);
         initView();
         initList();
     }
 
     private void initView() {
         EditText editTextReview = findViewById(R.id.edit_review);
-
-
         findViewById(R.id.bt_post_review).setOnClickListener(view -> {
             String text = editTextReview.getText().toString();
             Calendar c = Calendar.getInstance();
@@ -51,17 +46,7 @@ public class ReviewActivity extends AppCompatActivity {
             toast.setGravity(Gravity.TOP, 0, 0);
             toast.show();
 
-            ReviewPostTask task = new ReviewPostTask();
-            task.execute(text, strDate);
-            try {
-                Requests.makeToastNotification(context, task.get(500, TimeUnit.MILLISECONDS).status);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (TimeoutException e) {
-                e.printStackTrace();
-            }
+            task.loadReview(text);
         });
 
     }
@@ -71,46 +56,22 @@ public class ReviewActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
         ReviewsAdapter adapter = new ReviewsAdapter();
         for (Review review : createReviews()) {
+            review.setDate("30 сенятбря");
+            String login;
+            try {
+                login = new UserClient(context).getUserById(review.getAuthorId()).getLogin();
+            } catch (NullPointerException e) {
+                login = "Anonim";
+            }
+
+            review.setLogin(login);
             adapter.addReview(review);
         }
         recyclerView.setAdapter(adapter);
-
-
     }
 
     private Review[] createReviews() {
-        List<Review> list = new ArrayList<>();
-        list.add(new Review("ВОООООББЩЕ КРУТецкое место всем советую 5+", "22 августа 2018", "logArk1"));
-        list.add(new Review("ВОООООББЩЕ КРУТецкое место всем советую 5+", "22 августа 2018", "logArk2"));
-        list.add(new Review("ВОООООББЩЕ КРУТецкое место всем советую 5+", "22 августа 2018", "logArk3"));
-        list.add(new Review("ВОООООББЩЕ КРУТецкое место всем советую 5+", "22 августа 2018", "logArk4"));
-        list.add(new Review("ВОООООББЩЕ КРУТецкое место всем советую 5+", "22 августа 2018", "logArk5"));
-        list.add(new Review("ВОООООББЩЕ КРУТецкое место всем советую 5+", "22 августа 2018", "logArk6"));
-        list.add(new Review("ВОООООББЩЕ КРУТецкое место всем советую 5+", "22 августа 2018", "logArk7"));
-        return listToArray(list);
-
-       /* ReviewsGetTask task = new ReviewsGetTask();
-        task.execute();
-        try {
-            Review[] reviews = task.get(500, TimeUnit.MILLISECONDS);
-            return reviews;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
-        return new Review[0];*/
+        return task.getReviews();
     }
 
-    private Review[] listToArray(List<Review> list) {
-        Review[] array = new Review[list.size()];
-        int i = 0;
-        for (Review r : list) {
-            array[i] = r;
-            i++;
-        }
-        return array;
-    }
 }

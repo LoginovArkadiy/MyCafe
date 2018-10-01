@@ -45,7 +45,7 @@ public class BasketRecycleAdapter extends RecyclerView.Adapter<BasketRecycleAdap
         holder.tvCount.setText(count + "");
         String name = product.getEdition().length() > 0 ? product.getName() + "\n" + product.getEdition() : product.getName();
         holder.tvName.setText(name);
-        holder.imageView.setImageResource(product.getId());
+        holder.imageView.setImageResource(product.getMyDrawableId());
 
         holder.seekBar.setProgress(product.getCount());
         BasketFragment.changeBasket(getAllCast());

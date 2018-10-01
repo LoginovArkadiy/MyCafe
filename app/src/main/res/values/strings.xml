@@ -19,11 +19,13 @@
     <string name="count">Количество:</string>
     <string name="cast">Стоимость:</string>
     <string name="todaywork">Сегодня на смене</string>
+    <string name="orders">Заказы</string>
 
     <string-array name="adminlist">
         <item>Пицца</item>
         <item>Маффин</item>
         <item>Новость</item>
         <item>Сотрудник</item>
+        <item> Секция</item>
     </string-array>
 </resources>

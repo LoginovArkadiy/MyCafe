@@ -2,36 +2,39 @@ package com.develop.reapps.mycafe.server.news;
 
 import com.develop.reapps.mycafe.news.New;
 import com.develop.reapps.mycafe.server.AnswerBody;
-import com.develop.reapps.mycafe.server.Requests;
 
 import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface NewsService {
     //новая новость
-    @POST("/news/")
-    Call<AnswerBody> loadNew(@Field("title") String title,
-                             @Field("description") String description,
-                             @Field("imageId") int imageId,
-                             @Field("time") String time);
+    //editing header text image
+    @FormUrlEncoded
+    @POST("/api/news")
+    Call<AnswerBody> loadNew(@Field("header") String header,
+                             @Field("text") String text);
+
+    @FormUrlEncoded
+    @POST("/api/news/{id}/edit/image")
+    Call<AnswerBody> putImage(@Path("id") int id, @Field("imageId") int imageId);
+
+
 
     //все новости
-    @GET("/news/")
+    @GET("/api/news/")
     Call<New[]> getNews();
 
     //удалить новость
-    @GET("/news/delete/{id}")
+    @GET("api/news/delete/{id}")
     Call<AnswerBody> deleteNew(@Path("id") int id);
 
     //дать новость id
-    @GET("/news/get/{id}")
+    @GET("api/news/get/{id}")
     Call<New> getNewById(@Path("id") int id);
 
-    Retrofit retrofit = new Retrofit.Builder().baseUrl(Requests.baseUrl).addConverterFactory(GsonConverterFactory.create()).build();
 
 }

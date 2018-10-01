@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Toast;
 
 
+import com.develop.reapps.mycafe.order.Order;
 import com.develop.reapps.mycafe.order.OrderFragment;
 import com.develop.reapps.mycafe.order.basket.BasketFragment;
 import com.develop.reapps.mycafe.order.basket.BasketRecycleAdapter;
@@ -26,25 +27,29 @@ import com.develop.reapps.mycafe.news.NewsFragment;
 import com.develop.reapps.mycafe.order.hall.Hall;
 import com.develop.reapps.mycafe.order.hall.HallFragment;
 import com.develop.reapps.mycafe.order.hall.tabletime.TableFragment;
+import com.develop.reapps.mycafe.order.show.OrdersActivity;
 import com.develop.reapps.mycafe.profile.ProfileFragment;
 import com.develop.reapps.mycafe.reviews.ReviewActivity;
+import com.develop.reapps.mycafe.server.order.OrderTask;
+import com.develop.reapps.mycafe.server.retrofit.Requests;
+import com.develop.reapps.mycafe.server.order.OrderPostTask;
 import com.develop.reapps.mycafe.workers.WorkersFragment;
 
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
-public class MainActivity extends AppCompatActivity implements OnAddProductListener,
-        BasketFragment.OnClearBasketListener,
-        BasketRecycleAdapter.OnChangeCountProductListener,
-        BasketFragment.OnCreateOrderListener,
-        Hall.OnClickTableListener,
-        OnBackHomeInterface {
+public class MainActivity extends AppCompatActivity implements OnAddProductListener, BasketFragment.OnClearBasketListener, BasketRecycleAdapter.OnChangeCountProductListener, BasketFragment.OnCreateOrderListener, Hall.OnClickTableListener, OnBackHomeInterface, TableFragment.OnPostOrderListener {
 
     HashMap<Product, Integer> mapProducts;
     public static boolean ADMIN;
     private BottomNavigationView navigation;
     OrderFragment orderFragment;
-    Context context;
+    static Context context;
+
+    Order nowOrder;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -56,11 +61,12 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_home);
-        getSupportFragmentManager().beginTransaction().add(R.id.rootfragment, new WorkersFragment()).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.rootfragment, new NewsFragment()).commit();
         getSupportFragmentManager().beginTransaction().replace(R.id.rootfragment, new ProfileFragment()).commit();
         mapProducts = new HashMap<>();
         ADMIN = false;
         context = this;
+
 
     }
 
@@ -73,6 +79,9 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
                 break;
             case R.id.reviews_item:
                 startActivity(new Intent().setClass(context, ReviewActivity.class));
+                break;
+            case R.id.orders:
+                startActivity(new Intent().setClass(context, OrdersActivity.class));
                 break;
             case R.id.admin:
                 ADMIN = !ADMIN;
@@ -103,8 +112,11 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
             case R.id.navigation_menu:
                 changeFragment(new MenuFragment());
                 return true;
-            case R.id.navigation_basket:
+            case R.id.navigation_order:
+                nowOrder = new Order();
+                nowOrder.setHashMap(mapProducts);
                 orderFragment = new OrderFragment();
+
                 Bundle args = new Bundle();
                 args.putSerializable(BasketFragment.LIST_PRODUCTS, mapProducts);
                 orderFragment.setArguments(args);
@@ -119,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
 
     @Override
     public void onBackPressed() {
+        nowOrder = null;
         changeFragment(new NewsFragment());
         navigation.setSelectedItemId(R.id.navigation_news);
     }
@@ -183,7 +196,8 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
     }
 
     @Override
-    public void clickTable(int number) {
+    public void clickTable(int numberTable) {
+        nowOrder.setNumberTable(numberTable);
         if (orderFragment != null) orderFragment.setTableFragment(new TableFragment());
     }
 
@@ -191,5 +205,22 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
     public void backToHome() {
         navigation.setSelectedItemId(R.id.navigation_home);
         changeFragment(new ProfileFragment());
+    }
+
+
+    @Override
+    public void onPostOrder(String t1, String t2) {
+        nowOrder.setBeginTime(t1);
+        nowOrder.setEndTime(t2);
+        if (nowOrder.isGood()) {
+            OrderTask task = new OrderTask(context);
+            task.loadOrder(nowOrder.getOrder());
+        } else {
+            Requests.makeToastNotification(context, "Заказ сформирован неправильно");
+        }
+    }
+
+    public static Context getAppContext() {
+        return context;
     }
 }

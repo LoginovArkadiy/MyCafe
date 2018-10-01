@@ -56,7 +56,7 @@ public class MenuProductDialog {
 
         });
 
-        iv.setImageResource(product.getId());
+        iv.setImageResource(product.getMyDrawableId());
         tvCount.setText("1");
         tvCast.setText(product.getPrice() + " руб");
         tvName.setText(product.getName());

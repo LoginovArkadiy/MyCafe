@@ -2,7 +2,7 @@ package com.develop.reapps.mycafe.server.workers;
 
 import android.os.AsyncTask;
 
-import com.develop.reapps.mycafe.server.Requests;
+import com.develop.reapps.mycafe.server.retrofit.Requests;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class WorkerTimePostTask extends AsyncTask<Integer, Void, String> {
     @Override
     protected String doInBackground(Integer... params) {
-        Retrofit retrofit = new Retrofit.Builder()
+       /* Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Requests.baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -23,7 +23,8 @@ public class WorkerTimePostTask extends AsyncTask<Integer, Void, String> {
             return call.execute().body();
         } catch (IOException e) {
         }
-        return "ОШИБКА";
+        return "ОШИБКА";*/
+       return "";
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.develop.reapps.mycafe.news;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +35,16 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     @Override
     public void onBindViewHolder(@NonNull NewsHolder holder, int position) {
         New myNew = listNews.get(position);
+        Log.i("NEW_ADAPTER", position + " " + myNew.getName());
+       // if (myNew.getBitmap() == null) holder.imageView.setImageResource(myNew.getDrawableId());
+      //  else holder.imageView.setImageBitmap(myNew.getBitmap());
+/*
+        if (myNew.getImageView() == null) myNew.setImageBitmap(holder.imageView);
+        else holder.imageView = myNew.getImageView();*/
+
         holder.imageView.setImageResource(myNew.getDrawableId());
+        myNew.setImageBitmap(holder.imageView);
+       // holder.imageView.setImageBitmap(myNew.getBitmap());
         holder.title.setText(myNew.getName());
         holder.description.setText(myNew.getDescription());
         holder.time.setText(myNew.getTime());
@@ -66,4 +76,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
             review = itemView.findViewById(R.id.bt_review_new);
         }
     }
+
+
 }

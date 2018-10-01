@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import com.develop.reapps.mycafe.Product;
 import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.menu.ProductRecycleAdapter;
-import com.develop.reapps.mycafe.server.products.MenuGetTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +63,7 @@ public class PizzaFragment extends Fragment {
         return products;
     }
 
-    private Product[] createArray() {
+    private Product[] createArray() {/*
         MenuGetTask task = new MenuGetTask();
         task.execute(0);
         Product[] array = new Product[0];
@@ -77,7 +76,8 @@ public class PizzaFragment extends Fragment {
         } catch (TimeoutException e) {
             e.printStackTrace();
         }
-        return array;
+        return array;*/
+        return new Product[0];
     }
 
 }

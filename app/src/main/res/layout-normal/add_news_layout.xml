@@ -7,9 +7,10 @@
 
     <ImageView
         android:id="@+id/image_edit"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_margin="10dp"
         android:layout_weight="1"
         android:contentDescription="ffff"
         android:src="@drawable/ic_launcher_background" />

@@ -108,7 +108,7 @@
                     android:layout_marginTop="5dp"
                     android:ems="10"
                     android:hint="Email"
-                    android:inputType="textPersonName" />
+                    android:inputType="textEmailAddress" />
 
                 <EditText
                     android:id="@+id/pass_login"
@@ -118,7 +118,7 @@
                     android:layout_marginTop="5dp"
                     android:ems="10"
                     android:hint="Пароль"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPassword" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
@@ -167,7 +167,7 @@
                     android:layout_marginTop="5dp"
                     android:ems="10"
                     android:hint="Email"
-                    android:inputType="textPersonName" />
+                    android:inputType="textEmailAddress" />
 
                 <EditText
                     android:id="@+id/login_sign_up"
@@ -175,7 +175,7 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="Логин"
-                    android:inputType="textPersonName" />
+                    android:inputType="text|textNoSuggestions" />
 
                 <EditText
                     android:id="@+id/pass_sign_up"
@@ -185,7 +185,7 @@
                     android:layout_marginTop="5dp"
                     android:ems="10"
                     android:hint="Пароль"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPassword" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"

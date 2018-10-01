@@ -149,5 +149,13 @@ public class TableTimeView extends View {
         return "" + (time / 60) + ":" + (time % 60 < 10 ? "0" + (time % 60) : time % 60);
     }
 
+    protected String getBeginTime(){
+        return getTime(x1);
+    }
+
+    protected String getEndTime(){
+        return getTime(x2);
+    }
+
 
 }

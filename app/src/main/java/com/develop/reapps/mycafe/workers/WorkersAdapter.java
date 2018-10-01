@@ -1,5 +1,7 @@
 package com.develop.reapps.mycafe.workers;
 
+import android.content.Context;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,23 +12,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.develop.reapps.mycafe.R;
+import com.develop.reapps.mycafe.server.workers.WorkerClient;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
-public class WorkersRecycleAdapter extends RecyclerView.Adapter<WorkersRecycleAdapter.WorkerHolder> {
-
+public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.WorkerHolder> {
+    private Context context;
     private ArrayList<Worker> list;
 
 
-    public WorkersRecycleAdapter() {
+    public WorkersAdapter() {
         list = new ArrayList<>();
     }
 
     @NonNull
     @Override
     public WorkerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_worker, parent, false);
+        context = parent.getContext();
+        View view = LayoutInflater.from(context).inflate(R.layout.item_worker, parent, false);
         return new WorkerHolder(view);
     }
 
@@ -34,24 +40,19 @@ public class WorkersRecycleAdapter extends RecyclerView.Adapter<WorkersRecycleAd
     public void onBindViewHolder(@NonNull WorkerHolder holder, int position) {
         Worker worker = list.get(position);
         holder.imageView.setImageResource(worker.getId_drawable());
+        worker.setImageBitmap(holder.imageView);
+
         holder.twName.setText(worker.getName());
         holder.twOffice.setText(worker.getPost());
-        holder.layout.setVisibility(worker.isWorkNow() ? View.VISIBLE : View.INVISIBLE);
+        holder.layout.setVisibility(worker.isWorkToday() ? View.VISIBLE : View.INVISIBLE);
         holder.view.setOnLongClickListener(v -> {
-
-           /* WorkerTimePostTask task = new WorkerTimePostTask();
-            task.execute(worker.isWorkNow() ? 1 : 0, worker.getId());
-            try {
-                if (task.get().length() > 0 && !task.get().equals("ОШИБКА")) {
-                    worker.changeWorkNow();
-                    holder.layout.setVisibility(worker.isWorkNow() ? View.VISIBLE : View.INVISIBLE);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }*/
-
+            worker.setWorkToday(!worker.isWorkToday());
+            new WorkerClient(context).changeTime(worker.isWorkToday(), worker.getId());
+            Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            if (vibrator != null && vibrator.hasVibrator()) {
+                vibrator.vibrate(100);
+            }
+            update();
             return true;
         });
     }
@@ -62,7 +63,7 @@ public class WorkersRecycleAdapter extends RecyclerView.Adapter<WorkersRecycleAd
     }
 
     void addWorker(Worker worker) {
-        if (worker.isWorkNow()) {
+        if (worker.isWorkToday()) {
             list.add(0, worker);
         } else list.add(worker);
         notifyDataSetChanged();
@@ -70,6 +71,19 @@ public class WorkersRecycleAdapter extends RecyclerView.Adapter<WorkersRecycleAd
 
     public void addWorkers(List<Worker> workerList) {
         list.addAll(workerList);
+        notifyDataSetChanged();
+    }
+
+    private void update() {
+        Collections.sort(list, (o1, o2) -> {
+            if (o1.isWorkToday() && o2.isWorkToday()) {
+                if (o1.getRole() == o2.getRole()) return 0;
+                return o1.getRole() > o2.getRole() ? -1 : 1;
+            }
+            if (o1.isWorkToday()) return -1;
+            return 1;
+        });
+
         notifyDataSetChanged();
     }
 

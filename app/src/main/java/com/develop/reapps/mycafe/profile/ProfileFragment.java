@@ -13,33 +13,39 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.develop.reapps.mycafe.MainActivity;
-import com.develop.reapps.mycafe.Product;
+import com.develop.reapps.mycafe.MyBitmapConverter;
 import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.UserInfo;
-import com.develop.reapps.mycafe.news.New;
-import com.develop.reapps.mycafe.server.Requests;
-import com.develop.reapps.mycafe.server.news.NewPostTask;
-import com.develop.reapps.mycafe.server.products.ProductPostTask;
-import com.develop.reapps.mycafe.server.user.UserLogOutTask;
-import com.develop.reapps.mycafe.server.user.UserSignInTask;
-import com.develop.reapps.mycafe.server.user.UserSignUpTask;
-import com.develop.reapps.mycafe.server.workers.WorkerPostTask;
+import com.develop.reapps.mycafe.server.news.NewsClient;
+import com.develop.reapps.mycafe.server.products.ProductClient;
+import com.develop.reapps.mycafe.server.retrofit.Requests;
+import com.develop.reapps.mycafe.server.sections.Section;
+import com.develop.reapps.mycafe.server.sections.SectionTask;
+import com.develop.reapps.mycafe.server.user.UserClient;
+import com.develop.reapps.mycafe.server.workers.WorkerClient;
 import com.develop.reapps.mycafe.workers.Worker;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -50,14 +56,16 @@ public class ProfileFragment extends Fragment {
     public static final String APP_PREFERENCES_EMAIL = "email";
     public static final String APP_PREFERENCES_PASSWORD = "password";
 
-    CardView userInfoCard, loginCard, signUpCard;
-    TextView tvUsername, tvEmail;
-    EditText editEmailLogin, editPasswordLogin, editEmailSignUp, editPasswordSignUp, editLoginSignUp;
-    ImageView nowImageView;
-    Context context;
-    View rootView;
-    Bitmap bitmap;
+    private CardView userInfoCard, loginCard, signUpCard;
+    private TextView tvUsername, tvEmail;
+    private EditText editEmailLogin, editPasswordLogin, editEmailSignUp, editPasswordSignUp, editLoginSignUp;
+    private ImageView nowImageView;
+    private Context context;
+    private View rootView;
+    private Bitmap bitmap;
+    private Uri uri;
     private SharedPreferences myProfile;
+    private Section[] menuSections;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -138,61 +146,22 @@ public class ProfileFragment extends Fragment {
     private int signIn() {
         String email = editEmailLogin.getText().toString();
         String password = editPasswordLogin.getText().toString();
-        UserSignInTask task = new UserSignInTask();
-        task.execute(email, password);
-        int status = -1;
-        try {
-            status = task.get(500, TimeUnit.MILLISECONDS).status;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
+        int status = new UserClient(context).signIn(email, password);
         if (status == 200) safeData(email, password, "ЛОГИН");
-
         return status;
     }
 
     private int logout() {
-        UserLogOutTask task = new UserLogOutTask();
-        task.execute();
-        int status = -1;
-        try {
-            status = task.get(500, TimeUnit.MILLISECONDS).status;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
+        int status = new UserClient(context).logOut();
         if (status == 200) removeData();
-
         return status;
     }
 
     private int signUp() {
         String login = editLoginSignUp.getText().toString();
         String email = editEmailSignUp.getText().toString();
-
         String password = editPasswordSignUp.getText().toString();
-
-        UserSignUpTask task = new UserSignUpTask();
-        task.execute(login, email, password);
-        int status = -1;
-
-        try {
-            status = task.get(500, TimeUnit.MILLISECONDS).status;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
-
+        int status = new UserClient(context).signUp(email, login, password);
         if (status == 200) safeData(email, password, login);
 
         return status;
@@ -238,70 +207,101 @@ public class ProfileFragment extends Fragment {
         view.setVisibility(View.VISIBLE);
         Spinner spinner = view.findViewById(R.id.spinner);
         View productView = view.findViewById(R.id.product_include);
-        View workerView = view.findViewById(R.id.addworker);
+        View workerView = view.findViewById(R.id.worker_include);
         View newsView = view.findViewById(R.id.news_include);
-        setAdminListeners(productView, workerView, newsView, spinner);
+        View typesView = view.findViewById(R.id.types_include);
+        setAdminListeners(productView, workerView, newsView, typesView, spinner);
     }
 
-    private void setAdminListeners(View productView, View workerView, View newsView, Spinner spinner) {
+    private void setAdminListeners(View productView, View workerView, View newsView, View typesView, Spinner spinner) {
         setChangeSrcImageViewClickListener(productView.findViewById(R.id.image_add_product));
         setChangeSrcImageViewClickListener(workerView.findViewById(R.id.image_add_worker));
         setChangeSrcImageViewClickListener(newsView.findViewById(R.id.image_edit));
-
-        productView.findViewById(R.id.bt_post_product).setOnClickListener(v -> {
-            String name = getTextEdit(productView, R.id.name_add_product);
-            String weight = getTextEdit(productView, R.id.weight_add_product);
-            String price = getTextEdit(productView, R.id.price_add_product);
-            String description = getTextEdit(productView, R.id.description_add_product);
-            String type = String.valueOf(spinner.getSelectedItemPosition());
-            assert bitmap != null;
-            new ProductPostTask().execute(new Product(name, description, Integer.parseInt(price), Integer.parseInt(weight), Integer.parseInt(type), bitmap));
-
+        Button productButton = productView.findViewById(R.id.bt_post_product);
+        Button workerButton = workerView.findViewById(R.id.bt_post_worker);
+        Button newsButton = newsView.findViewById(R.id.bt_post_news);
+        Button typesButton = typesView.findViewById(R.id.bt_post_types);
+        productButton.setOnClickListener(v -> {
+            int index = spinner.getSelectedItemPosition();
+            if (index < menuSections.length && index >= 0) {
+                String name = getTextEdit(productView, R.id.name_add_product);
+                String weight = getTextEdit(productView, R.id.weight_add_product);
+                String price = getTextEdit(productView, R.id.price_add_product);
+                String description = getTextEdit(productView, R.id.description_add_product);
+                String type = menuSections[index].getSection();
+                new ProductClient(context).loadProduct(name, description, type, Integer.parseInt(price), Integer.parseInt(weight), getFile(name));
+            } else Requests.makeToastNotification(context, "What the Fuck?! Try again!");
         });
 
-        workerView.findViewById(R.id.bt_post_worker).setOnClickListener(v -> {
-            String email = getTextEdit(workerView, R.id.email_worker);
-            String post = getTextEdit(workerView, R.id.post_worker);
-            String role = getTextEdit(workerView, R.id.role_worker);
-            new WorkerPostTask().execute(new Worker("Егор", post, email, Integer.parseInt(role), bitmap));
+        workerButton.setOnClickListener(v -> {
+            String email = getTextEdit(workerView, R.id.email_add_worker);
+            String post = getTextEdit(workerView, R.id.post_add_worker);
+            String role = getTextEdit(workerView, R.id.role_add_worker);
+            new WorkerClient(context).loadWorker(new Worker("Егор", post, email, Integer.parseInt(role), getFile(email)));
         });
-
-
-        newsView.findViewById(R.id.bt_post_news).setOnClickListener(v -> {
+        newsButton.setOnClickListener(v -> {
             String name = getTextEdit(newsView, R.id.title_add_news);
             String description = getTextEdit(newsView, R.id.description_add_news);
-            new NewPostTask().execute(new New(name, description, "22 августа ", bitmap));
+            new NewsClient(context).loadNew(name, description, "30 сентября", getFile(name));
         });
+        typesButton.setOnClickListener(v -> {
+            String section = getTextEdit(typesView, R.id.title_add_types);
+            new SectionTask(context).loadSection(section);
+        });
+        productButton.setOnTouchListener(MainActivity.onTouchListener);
+        workerButton.setOnTouchListener(MainActivity.onTouchListener);
+        newsButton.setOnTouchListener(MainActivity.onTouchListener);
+        typesButton.setOnTouchListener(MainActivity.onTouchListener);
+
+        initSpinner(productView, workerView, newsView, typesView, spinner);
+
+
+    }
+
+    private void initSpinner(View productView, View workerView, View newsView, View typesView, Spinner spinner) {
+        menuSections = new SectionTask(context).getSections();
+        List<String> allSections = new ArrayList<>(menuSections.length);
+        for (Section section : menuSections) {
+            allSections.add(section.getSection());
+        }
+        allSections.add("News");
+        allSections.add("Workers");
+        allSections.add("Section");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, allSections);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                    case 1://product
-                        productView.setVisibility(View.VISIBLE);
-                        workerView.setVisibility(View.GONE);
-                        newsView.setVisibility(View.GONE);
-                        break;
-                    case 2://news
-                        newsView.setVisibility(View.VISIBLE);
-                        productView.setVisibility(View.GONE);
-                        workerView.setVisibility(View.GONE);
-                        break;
-                    case 3:  //worker
-                        workerView.setVisibility(View.VISIBLE);
-                        productView.setVisibility(View.GONE);
-                        newsView.setVisibility(View.GONE);
-                        break;
-
+                if (position < menuSections.length) {
+                    productView.setVisibility(View.VISIBLE);
+                    workerView.setVisibility(View.GONE);
+                    newsView.setVisibility(View.GONE);
+                    typesView.setVisibility(View.GONE);
+                } else if (position == menuSections.length) {//news
+                    newsView.setVisibility(View.VISIBLE);
+                    productView.setVisibility(View.GONE);
+                    workerView.setVisibility(View.GONE);
+                    typesView.setVisibility(View.GONE);
+                } else if (position == menuSections.length + 1) {//workers
+                    workerView.setVisibility(View.VISIBLE);
+                    productView.setVisibility(View.GONE);
+                    newsView.setVisibility(View.GONE);
+                    typesView.setVisibility(View.GONE);
+                } else if (position == menuSections.length + 2) {//sections
+                    workerView.setVisibility(View.GONE);
+                    productView.setVisibility(View.GONE);
+                    newsView.setVisibility(View.GONE);
+                    typesView.setVisibility(View.VISIBLE);
                 }
             }
+
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
-
     }
 
     private String getTextEdit(View view, int id) {
@@ -318,8 +318,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public void setImage(Bitmap bitmap) {
-
-        this.bitmap = Bitmap.createScaledBitmap(bitmap, 144, 144, true);
+        this.bitmap = Bitmap.createScaledBitmap(bitmap, (int) (750 * ((double) bitmap.getWidth() / (double) bitmap.getHeight())), 750, true);
         nowImageView.setImageBitmap(this.bitmap);
     }
 
@@ -336,8 +335,36 @@ public class ProfileFragment extends Fragment {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    this.uri = selectedImage;
                     setImage(bitmap);
                 }
         }
+    }
+
+    private File getFile(String fileName) {
+        File file = new File(context.getCacheDir(), fileName);
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter(file);
+            pw.write("");
+            pw.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        try {
+
+
+            file.createNewFile();
+
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(MyBitmapConverter.getByteArrayFromBitmap(bitmap));
+            fos.flush();
+            fos.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
     }
 }

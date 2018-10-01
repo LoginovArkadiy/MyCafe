@@ -34,6 +34,7 @@ public class TableFragment extends Fragment {
     }
 
     private void init() {
+        tableTimeView = new TableTimeView(context);
         Button back = rootView.findViewById(R.id.bt_back_hall);
         Button ok = rootView.findViewById(R.id.bt_order_ok);
         back.setOnClickListener(v -> {
@@ -41,21 +42,28 @@ public class TableFragment extends Fragment {
         });
         ok.setOnClickListener(v -> {
             Toast.makeText(context, "Мы начали готовить ваш заказ", Toast.LENGTH_SHORT).show();
+            OnPostOrderListener listener = (OnPostOrderListener) context;
+            listener.onPostOrder(tableTimeView.getBeginTime(), tableTimeView.getEndTime());
             goHome();
         });
+
 
         back.setOnTouchListener(MainActivity.onTouchListener);
         ok.setOnTouchListener(MainActivity.onTouchListener);
 
         FrameLayout layout = rootView.findViewById(R.id.time_table_layout);
-        tableTimeView = new TableTimeView(context);
+
         layout.addView(tableTimeView);
 
     }
+
 
     private void goHome() {
         ((OnBackHomeInterface) context).backToHome();
     }
 
-
+    @FunctionalInterface
+    public interface OnPostOrderListener {
+        void onPostOrder(String t1, String t2);
+    }
 }

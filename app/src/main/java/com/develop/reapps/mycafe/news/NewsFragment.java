@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.develop.reapps.mycafe.R;
+import com.develop.reapps.mycafe.server.news.NewsClient;
 
 public class NewsFragment extends Fragment {
 
@@ -37,12 +38,11 @@ public class NewsFragment extends Fragment {
     }
 
     private void initList() {
-        adapter.addNew(new New("Новый сотрудник", "Знакомьтесь - наш бармен Барт!)", R.drawable.bart, "5 августа 14:02"));
-        adapter.addNew(new New("АКЦИЯ", "Если Вы Егор и ваш друг Никита, то вам хорошо!", R.drawable.friends, "7 августа 14:02"));
-        adapter.addNew(new New("У нас новый табак", "Смотрите какая красивая лэйбл", R.drawable.tabac, "10 августа 14:02"));
-        adapter.addNew(new New("Новый сотрудник", "Знакомьтесь - наш менджер Мардж!)", R.drawable.wife, "12 августа 14:02"));
-        adapter.addNew(new New("АКЦИЯ", "1+1 = 2, покупаете наш Бургер Arifmetic и наш официант поможет вам разобраться с домашним заданием", R.drawable.stock, "12 августа 14:02"));
-
+        New[] myNews = new NewsClient(context).getNews();
+        for(int i = myNews.length - 1; i > -1; i--){
+            adapter.addNew(myNews[i]);
+        }
+        adapter.notifyDataSetChanged();
     }
 
 

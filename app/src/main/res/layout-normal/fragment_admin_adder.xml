@@ -28,8 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_weight="1"
-                android:entries="@array/adminlist" />
+                android:layout_weight="1" />
 
         </LinearLayout>
 
@@ -42,7 +41,7 @@
             android:visibility="gone" />
 
         <include
-            android:id="@+id/addworker"
+            android:id="@+id/worker_include"
             layout="@layout/addworker_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,6 +50,12 @@
         <include
             android:id="@+id/news_include"
             layout="@layout/add_news_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+        <include
+            android:id="@+id/types_include"
+            layout="@layout/add_types_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone" />

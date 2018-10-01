@@ -67,7 +67,7 @@ public class ProductRecycleAdapter extends RecyclerView.Adapter<ProductRecycleAd
 
         holder.tvName.setText(product.getName());
         holder.tvDescription.setText(product.getShortDescription());
-        holder.image.setImageResource(product.getId());
+        holder.image.setImageResource(product.getMyDrawableId());
         holder.tvPrice.setText(product.getPrice() + " руб.");
         holder.tvWeight.setText(product.getWeight() + " г");
 

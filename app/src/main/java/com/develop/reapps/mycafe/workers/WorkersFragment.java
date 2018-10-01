@@ -12,9 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.develop.reapps.mycafe.R;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.develop.reapps.mycafe.server.workers.WorkerClient;
 
 public class WorkersFragment extends Fragment {
 
@@ -37,35 +35,19 @@ public class WorkersFragment extends Fragment {
     private void initList() {
         RecyclerView listView = rootView.findViewById(R.id.list_workers);
         listView.setLayoutManager(new LinearLayoutManager(context, 1, false));
-        WorkersRecycleAdapter adapter = new WorkersRecycleAdapter();
+        WorkersAdapter adapter = new WorkersAdapter();
         listView.setAdapter(adapter);
 
-        List<Worker> workers = new ArrayList<>();
-/*
-        WorkersGetTask workersGetTask = new WorkersGetTask();
-        workersGetTask.execute();
-        Worker[] workers = new Worker[0];
-        try {
-            workers = workersGetTask.get(1, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
-        for (Worker w : workers) {
-            adapter.addWorker(w);
-        }
-*/
-        workers.add(new Worker("Барт", "Бармен", R.drawable.bart, true));
+        Worker[] workers1 = new WorkerClient(context).getWorkers();
+      /*  workers.add(new Worker("Барт", "Бармен", R.drawable.bart, true));
         workers.add(new Worker("Гомер", "Официант", R.drawable.gomer, true));
         workers.add(new Worker("Мардж", "Администратор", R.drawable.wife, true));
         workers.add(new Worker("Лиза", "Бармен", R.drawable.liza, false));
         workers.add(new Worker("Нед", "Официант", R.drawable.ned, true));
         workers.add(new Worker("Бёрнс", "Администратор", R.drawable.mrburns, false));
         workers.add(new Worker("Милхаус", "Кассир", R.drawable.milhaus, true));
-        for (Worker w : workers) {
+*/
+        for (Worker w : workers1) {
             adapter.addWorker(w);
         }
     }

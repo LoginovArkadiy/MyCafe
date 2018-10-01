@@ -3,6 +3,7 @@ package com.develop.reapps.mycafe.menu;
 
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -14,7 +15,10 @@ import com.develop.reapps.mycafe.Product;
 import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.menu.productsfragment.MaffinFragment;
 import com.develop.reapps.mycafe.menu.productsfragment.PizzaFragment;
+import com.develop.reapps.mycafe.menu.productsfragment.ProductFragment;
 import com.develop.reapps.mycafe.menu.productsfragment.TabaccoFragment;
+import com.develop.reapps.mycafe.server.sections.Section;
+import com.develop.reapps.mycafe.server.sections.SectionTask;
 
 import java.util.HashMap;
 
@@ -28,27 +32,31 @@ public class MenuFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_menu, container, false);
-        viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
+        viewPager = rootView.findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
-        TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.tablayout);
+        TabLayout tabLayout = rootView.findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
         return rootView;
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
-        adapter.addPage(new PizzaFragment(), "Пиццы");
+        SectionTask sectionTask = new SectionTask(getContext());
+        Section[] sections = sectionTask.getSections();
+        adapter.addPage(new PizzaFragment(), "Pizza");
         adapter.addPage(new MaffinFragment(), "Маффины");
         adapter.addPage(new TabaccoFragment(), "Табаки");
-       /* adapter.addPage(new PizzaFragment(), "Напитки");
-        adapter.addPage(new PizzaFragment(), "Десерты");
-        adapter.addPage(new PizzaFragment(), "Табаки");
-        adapter.addPage(new PizzaFragment(), "Прочее");*/
+        for (Section section : sections) {
+            Fragment productFragment = new ProductFragment();
+            Bundle args = new Bundle();
+            args.putString(ProductFragment.SECTION_KEY, section.getSection());
+            adapter.addPage(productFragment, section.getSection());
+        }
+
+
         viewPager.setAdapter(adapter);
     }
 

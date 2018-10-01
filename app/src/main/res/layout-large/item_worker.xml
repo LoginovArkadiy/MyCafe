@@ -22,6 +22,7 @@
             android:id="@+id/face_worker"
             android:layout_width="144dp"
             android:layout_height="144dp"
+            android:scaleType="centerCrop"
             app:srcCompat="@drawable/bart" />
 
         <LinearLayout

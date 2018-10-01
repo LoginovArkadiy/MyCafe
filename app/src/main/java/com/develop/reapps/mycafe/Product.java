@@ -2,20 +2,43 @@ package com.develop.reapps.mycafe;
 
 import android.graphics.Bitmap;
 
+import com.develop.reapps.mycafe.server.uploads.UploadClient;
+import com.develop.reapps.mycafe.server.uploads.UploadsService;
+import com.google.gson.annotations.SerializedName;
+
+import java.io.File;
+
 public class Product {
     private static final int LENGTH_DESCRIPTION = 40;
+    @SerializedName("name")
+    private String name;
+    @SerializedName("description")
+    private String description;
+    @SerializedName("id")
+    private int id;
+    @SerializedName("price")
+    private int price;
+    @SerializedName("weight")
+    private int weight;
+    @SerializedName("strType")
+    private String strType;
+    @SerializedName("imageId")
+    private int imageId;
 
-    private String name, description, edition;
-    private int id, price, weight, type;
+    private int myDrawableId;
+
+
+    private File file;
+    private String edition;
+    private int type;
     private int count;
-    private byte[] bytes;
     private Bitmap bitmap;
 
 
-    public Product(String name, String description, int id, int price, int weight) {
+    public Product(String name, String description, int myDrawableId, int price, int weight) {
         this.name = name;
         this.description = description;
-        this.id = id;
+        this.myDrawableId = myDrawableId;
         this.price = price;
         this.weight = weight;
         count = 0;
@@ -23,13 +46,14 @@ public class Product {
         type = 0;
     }
 
-    public Product(String name, String description, int price, int weight, int type, Bitmap bitmap) {
+    public Product(String name, String description, int price, int weight, String strType, File file) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.weight = weight;
-        this.type = type;
-        this.bitmap = bitmap;
+        this.strType = strType;
+        this.file = file;
+        edition = "";
     }
 
     public int getType() {
@@ -48,6 +72,7 @@ public class Product {
     }
 
     public String getEdition() {
+        if (edition == null) edition = "";
         return edition;
     }
 
@@ -75,9 +100,12 @@ public class Product {
         return description.length() > LENGTH_DESCRIPTION + 3 ? description.substring(0, LENGTH_DESCRIPTION) + "..." : description;
     }
 
+    public String getStrType() {
+        return strType;
+    }
 
-    public int getId() {
-        return id;
+    public int getMyDrawableId() {
+        return myDrawableId;
     }
 
     public void setCount(int count) {
@@ -88,14 +116,18 @@ public class Product {
         return count;
     }
 
-    public byte[] getBytes() {
-        if (bytes == null) bytes = MyBitmapConverter.getByteArrayFromBitmap(bitmap);
-        return bytes;
-    }
 
     public Bitmap getBitmap() {
-        if (bitmap == null) bitmap = MyBitmapConverter.getBitmapfromByteArray(bytes);
+        if (bitmap == null) {
+            bitmap = new UploadClient().getImageById(imageId);
+        }
 
         return bitmap;
     }
+
+    public File getFile() {
+        return file;
+    }
+
+
 }
