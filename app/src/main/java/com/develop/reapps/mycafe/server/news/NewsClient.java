@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.develop.reapps.mycafe.MainActivity;
+import com.develop.reapps.mycafe.MyDateConverter;
 import com.develop.reapps.mycafe.news.New;
 import com.develop.reapps.mycafe.server.AnswerBody;
 import com.develop.reapps.mycafe.server.retrofit.Requests;
@@ -39,6 +40,7 @@ public class NewsClient {
     }
 
     public void loadNew(String name, String description, String date, File file) {
+        date = MyDateConverter.getMoment();
         New myNew = new New(name, description, date, file);
         NewPostTask task = new NewPostTask();
         task.execute(myNew);
@@ -80,7 +82,7 @@ public class NewsClient {
 
             String title = myNew.getName();
             String description = myNew.getDescription();
-            String time = myNew.getTime();
+            String date = myNew.getTime();
             File f = myNew.getFile();
 
             RequestBody reqFile = RequestBody.create(MediaType.parse("multipart/form-data"), f);
@@ -90,7 +92,7 @@ public class NewsClient {
             try {
                 Call<AnswerBody> uploadCall = uploadsService.loadPicture3(body, reqDescription);
                 Integer imageId = Objects.requireNonNull(uploadCall.execute().body()).id;
-                Call<AnswerBody> call = newsService.loadNew(title, description);
+                Call<AnswerBody> call = newsService.loadNew(title, description, date);
                 Integer id = Objects.requireNonNull(call.execute().body()).id;
                 Call<AnswerBody> call2 = newsService.putImage(id, imageId);
                 return call2.execute().code();

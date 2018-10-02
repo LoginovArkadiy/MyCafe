@@ -27,7 +27,7 @@ public class BasketFragment extends Fragment {
     public static final String LIST_PRODUCTS = "list_products";
     static TextView twAllCast;
     View rootView;
-    BasketRecycleAdapter adapter;
+    BasketAdapter adapter;
     Context context;
     ArrayList<Product> products;
 
@@ -57,7 +57,7 @@ public class BasketFragment extends Fragment {
 
     private void initList() {
         RecyclerView listView = rootView.findViewById(R.id.list_product);
-        adapter = new BasketRecycleAdapter();
+        adapter = new BasketAdapter();
         listView.setAdapter(adapter);
         listView.setLayoutManager(new LinearLayoutManager(context, LinearLayout.VERTICAL, false));
         adapter.addProducts(products);

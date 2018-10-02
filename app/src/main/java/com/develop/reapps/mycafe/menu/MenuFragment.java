@@ -24,7 +24,6 @@ import java.util.HashMap;
 
 public class MenuFragment extends Fragment {
     ViewPager viewPager;
-    ViewPagerAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,28 +45,17 @@ public class MenuFragment extends Fragment {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
         SectionTask sectionTask = new SectionTask(getContext());
         Section[] sections = sectionTask.getSections();
-        adapter.addPage(new PizzaFragment(), "Pizza");
-        adapter.addPage(new MaffinFragment(), "Маффины");
-        adapter.addPage(new TabaccoFragment(), "Табаки");
+       // adapter.addPage(new PizzaFragment(), "Pizza");
+        //adapter.addPage(new MaffinFragment(), "Маффины");
+        //adapter.addPage(new TabaccoFragment(), "Табаки");
         for (Section section : sections) {
             Fragment productFragment = new ProductFragment();
             Bundle args = new Bundle();
             args.putString(ProductFragment.SECTION_KEY, section.getSection());
+            productFragment.setArguments(args);
             adapter.addPage(productFragment, section.getSection());
         }
-
-
         viewPager.setAdapter(adapter);
-    }
-
-    public HashMap<Product, Integer> getBasketProducts() {
-        HashMap<Product, Integer> hm = new HashMap<>();
-        for (Page p : adapter.getPageList()) {
-
-        }
-
-
-        return hm;
     }
 
 

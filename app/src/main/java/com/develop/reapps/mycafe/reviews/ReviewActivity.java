@@ -8,10 +8,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.develop.reapps.mycafe.MainActivity;
+import com.develop.reapps.mycafe.MyDateConverter;
 import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.server.review.ReviewClient;
 import com.develop.reapps.mycafe.server.user.UserClient;
@@ -35,19 +38,20 @@ public class ReviewActivity extends AppCompatActivity {
         initList();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initView() {
         EditText editTextReview = findViewById(R.id.edit_review);
-        findViewById(R.id.bt_post_review).setOnClickListener(view -> {
+        Button btPostReview = findViewById(R.id.bt_post_review);
+        btPostReview.setOnClickListener(view -> {
             String text = editTextReview.getText().toString();
-            Calendar c = Calendar.getInstance();
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String strDate = sdf.format(c.getTime());
+            String strDate = MyDateConverter.getMoment();
             Toast toast = Toast.makeText(context, strDate, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.TOP, 0, 0);
             toast.show();
 
-            task.loadReview(text);
+            task.loadReview(text, strDate);
         });
+        btPostReview.setOnTouchListener(MainActivity.onTouchListener);
 
     }
 
@@ -56,7 +60,6 @@ public class ReviewActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
         ReviewsAdapter adapter = new ReviewsAdapter();
         for (Review review : createReviews()) {
-            review.setDate("30 сенятбря");
             String login;
             try {
                 login = new UserClient(context).getUserById(review.getAuthorId()).getLogin();

@@ -78,7 +78,7 @@ public class Worker {
     }
 
     public int getId_drawable() {
-        if (drawableId == null) drawableId = R.drawable.ic_launcher_foreground;
+        if (drawableId == null) drawableId = R.drawable.reapps;
         return drawableId;
     }
 

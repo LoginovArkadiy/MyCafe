@@ -24,27 +24,20 @@ public interface ProductService {
     );
 
     //все продукты
-    @GET("api/menu")
-    Call<Product[]> getProducts(@Query("type") String type);
+    @GET("api/menu/gets/type/{type}")
+    Call<Product[]> getProducts(@Path("type") String type);
 
     //возвращает продукт по id
-    @GET("/menu/get/id/{id}")
+    @GET("api/menu/get/id/{id}")
     Call<Product> getProductById(@Path("id") int id);
 
-    //возвращает список продуктов по типу
-    @GET("/menu/gets/type/{type}")
-    Call<Product[]> getProductsByType(@Path("type") int type);
+
+    @POST("api/menu/{id}/edit/publicaccess/{flag}")
+    Call<AnswerBody> setPublicAccess(@Path("id") int id, @Path("flag") boolean flag);
 
     @FormUrlEncoded
-    @POST("/menu/{id}/edit/image")
+    @POST("api/menu/{id}/edit/image")
     Call<AnswerBody> editImage(@Path("id") int id, @Field("imageId") int imageId);
 
-    //все типы продуктов
-    @GET("/menuSections")
-    Call<AnswerBody> getMenuSections();
-
-    //добавление нового типа
-    @POST("/menuSections")
-    Call<AnswerBody> addMenuSections(@Field("type") int type);
 
 }

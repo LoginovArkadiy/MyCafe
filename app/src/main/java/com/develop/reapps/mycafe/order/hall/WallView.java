@@ -38,7 +38,7 @@ public class WallView extends View implements MyView {
     }
 
     @Override
-    public void moveD(float x, float y) {
+    public void move(float x, float y) {
         float dx = x - (x1 + x2) / 2;
         float dy = y - (y1 + y2) / 2;
         x1 += dx;
@@ -47,8 +47,6 @@ public class WallView extends View implements MyView {
         y2 += dy;
         invalidate();
     }
-
-
 
     @Override
     public void changeMas(float x0, float y0, int angle) {
@@ -83,6 +81,11 @@ public class WallView extends View implements MyView {
     @Override
     public boolean isTable() {
         return false;
+    }
+
+    @Override
+    public void setMyOnClickListener(OnClickListener listener) {
+        setOnClickListener(listener);
     }
 
     private int getAngle(int x, int y) {

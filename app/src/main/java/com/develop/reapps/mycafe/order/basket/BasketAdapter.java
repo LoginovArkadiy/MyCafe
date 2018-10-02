@@ -18,12 +18,12 @@ import com.develop.reapps.mycafe.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BasketRecycleAdapter extends RecyclerView.Adapter<BasketRecycleAdapter.BasketHolder> {
+public class BasketAdapter extends RecyclerView.Adapter<BasketAdapter.BasketHolder> {
 
     private ArrayList<Product> list;
     private Context context;
 
-    BasketRecycleAdapter() {
+    BasketAdapter() {
         list = new ArrayList<>();
     }
 
@@ -45,7 +45,9 @@ public class BasketRecycleAdapter extends RecyclerView.Adapter<BasketRecycleAdap
         holder.tvCount.setText(count + "");
         String name = product.getEdition().length() > 0 ? product.getName() + "\n" + product.getEdition() : product.getName();
         holder.tvName.setText(name);
+
         holder.imageView.setImageResource(product.getMyDrawableId());
+        product.setImageBitmap(holder.imageView);
 
         holder.seekBar.setProgress(product.getCount());
         BasketFragment.changeBasket(getAllCast());

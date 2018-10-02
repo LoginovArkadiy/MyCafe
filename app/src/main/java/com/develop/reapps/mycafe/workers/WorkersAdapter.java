@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.develop.reapps.mycafe.MainActivity;
 import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.server.workers.WorkerClient;
 
@@ -45,6 +46,7 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.WorkerHo
         holder.twName.setText(worker.getName());
         holder.twOffice.setText(worker.getPost());
         holder.layout.setVisibility(worker.isWorkToday() ? View.VISIBLE : View.INVISIBLE);
+        if(MainActivity.ADMIN)
         holder.view.setOnLongClickListener(v -> {
             worker.setWorkToday(!worker.isWorkToday());
             new WorkerClient(context).changeTime(worker.isWorkToday(), worker.getId());

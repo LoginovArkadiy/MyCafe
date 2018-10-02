@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.develop.reapps.mycafe.MainActivity;
 import com.develop.reapps.mycafe.OnAddProductListener;
 import com.develop.reapps.mycafe.Product;
 import com.develop.reapps.mycafe.R;
@@ -20,18 +21,18 @@ import com.develop.reapps.mycafe.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductRecycleAdapter extends RecyclerView.Adapter<ProductRecycleAdapter.ProductMenuHolder> {
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductMenuHolder> {
     private List<Product> productList;
     private Context context;
     private LayoutInflater inflater;
     boolean isTabac;
 
-    public ProductRecycleAdapter() {
+    public ProductAdapter() {
         productList = new ArrayList<>();
         isTabac = false;
     }
 
-    public ProductRecycleAdapter(boolean isTabac) {
+    public ProductAdapter(boolean isTabac) {
         productList = new ArrayList<>();
         this.isTabac = isTabac;
     }
@@ -55,19 +56,24 @@ public class ProductRecycleAdapter extends RecyclerView.Adapter<ProductRecycleAd
             if (isTabac) {
                 showDialog(context, product, inflater);
             } else {
+
                 OnAddProductListener listener = (OnAddProductListener) context;
                 listener.addProductToBasket(product, 1);
             }
         });
-        holder.buttonAdd.setOnTouchListener(onTouchListener);
+        holder.buttonAdd.setOnTouchListener(MainActivity.onTouchListener);
 
         holder.layout.setOnClickListener(v -> {
+
             showDialog(context, product, inflater);
         });
 
         holder.tvName.setText(product.getName());
         holder.tvDescription.setText(product.getShortDescription());
+
         holder.image.setImageResource(product.getMyDrawableId());
+        product.setImageBitmap(holder.image);
+
         holder.tvPrice.setText(product.getPrice() + " руб.");
         holder.tvWeight.setText(product.getWeight() + " г");
 
@@ -100,21 +106,6 @@ public class ProductRecycleAdapter extends RecyclerView.Adapter<ProductRecycleAd
         }
     }
 
-
-    @SuppressLint("ClickableViewAccessibility")
-    private View.OnTouchListener onTouchListener = (v, event) -> {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                v.setBackgroundResource(R.color.ltgrey);
-                break;
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                v.setBackgroundResource(R.color.white);
-                break;
-        }
-
-        return false;
-    };
 
     static class ProductMenuHolder extends RecyclerView.ViewHolder {
         ImageView image;

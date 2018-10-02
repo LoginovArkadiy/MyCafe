@@ -17,7 +17,8 @@ public interface ReviewsService {
     //добавление нового отзыва
     @FormUrlEncoded
     @POST("api/comments")
-    Call<AnswerBody> loadComment(@Field("text") String text);
+    Call<AnswerBody> loadComment(@Field("text") String text,
+                                 @Field("date") String date);
 
     //возваращает все отзывы
     @GET("api/comments")

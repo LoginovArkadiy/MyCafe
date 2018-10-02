@@ -39,15 +39,15 @@ public class MenuProductDialog {
                 Toast.makeText(context, "Продукт удалён", Toast.LENGTH_SHORT).show();
                 dialog.cancel();
             });
-            bRemove.setOnTouchListener(onTouchListener);
+            bRemove.setOnTouchListener(MainActivity.onTouchListener);
         } else view.findViewById(R.id.card_remove).setVisibility(View.GONE);
 
         ImageView iv = view.findViewById(R.id.alert_imageView);
         ad.setCancelable(true);
 
         bBack.setOnClickListener(v -> dialog.cancel());
-        bBack.setOnTouchListener(onTouchListener);
-        bAdd.setOnTouchListener(onTouchListener);
+        bBack.setOnTouchListener(MainActivity.onTouchListener);
+        bAdd.setOnTouchListener(MainActivity.onTouchListener);
 
         bAdd.setOnClickListener(v -> {
             OnAddProductListener listener = (OnAddProductListener) context;
@@ -55,8 +55,9 @@ public class MenuProductDialog {
             dialog.cancel();
 
         });
-
         iv.setImageResource(product.getMyDrawableId());
+        product.setImageBitmap(iv);
+
         tvCount.setText("1");
         tvCast.setText(product.getPrice() + " руб");
         tvName.setText(product.getName());
@@ -85,23 +86,6 @@ public class MenuProductDialog {
         dialog.show();
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private View.OnTouchListener onTouchListener = (v, event) -> {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                v.setBackgroundResource(R.color.ltgrey);
-                break;
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                v.setBackgroundResource(R.color.white);
-                break;
-        }
-
-        return false;
-    };
 
 
-    public void showDialog() {
-        dialog.show();
-    }
 }

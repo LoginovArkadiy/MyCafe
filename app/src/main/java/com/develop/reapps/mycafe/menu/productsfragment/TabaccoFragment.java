@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 
 import com.develop.reapps.mycafe.Product;
 import com.develop.reapps.mycafe.R;
-import com.develop.reapps.mycafe.menu.ProductRecycleAdapter;
+import com.develop.reapps.mycafe.menu.ProductAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public class TabaccoFragment extends Fragment {
 
     private void initList() {
         RecyclerView listView = rootView.findViewById(R.id.list_product);
-        ProductRecycleAdapter adapter = new ProductRecycleAdapter(true);
+        ProductAdapter adapter = new ProductAdapter(true);
         listView.setLayoutManager(new LinearLayoutManager(context, LinearLayout.VERTICAL, false));
         listView.setAdapter(adapter);
         adapter.addProducts(createBeginProducts());

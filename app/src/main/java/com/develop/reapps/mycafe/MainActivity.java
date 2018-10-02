@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.develop.reapps.mycafe.order.Order;
 import com.develop.reapps.mycafe.order.OrderFragment;
 import com.develop.reapps.mycafe.order.basket.BasketFragment;
-import com.develop.reapps.mycafe.order.basket.BasketRecycleAdapter;
+import com.develop.reapps.mycafe.order.basket.BasketAdapter;
 import com.develop.reapps.mycafe.menu.MenuFragment;
 import com.develop.reapps.mycafe.news.NewsFragment;
 import com.develop.reapps.mycafe.order.hall.Hall;
@@ -32,16 +32,12 @@ import com.develop.reapps.mycafe.profile.ProfileFragment;
 import com.develop.reapps.mycafe.reviews.ReviewActivity;
 import com.develop.reapps.mycafe.server.order.OrderTask;
 import com.develop.reapps.mycafe.server.retrofit.Requests;
-import com.develop.reapps.mycafe.server.order.OrderPostTask;
 import com.develop.reapps.mycafe.workers.WorkersFragment;
 
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-public class MainActivity extends AppCompatActivity implements OnAddProductListener, BasketFragment.OnClearBasketListener, BasketRecycleAdapter.OnChangeCountProductListener, BasketFragment.OnCreateOrderListener, Hall.OnClickTableListener, OnBackHomeInterface, TableFragment.OnPostOrderListener {
+public class MainActivity extends AppCompatActivity implements OnAddProductListener, BasketFragment.OnClearBasketListener, BasketAdapter.OnChangeCountProductListener, BasketFragment.OnCreateOrderListener, Hall.OnClickTableListener, OnBackHomeInterface, TableFragment.OnPostOrderListener {
 
     HashMap<Product, Integer> mapProducts;
     public static boolean ADMIN;

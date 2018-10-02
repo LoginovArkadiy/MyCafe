@@ -27,8 +27,8 @@ public class ReviewClient {
         service = Requests.getClient().create(ReviewsService.class);
     }
 
-    public void loadReview(String text) {
-        Call<AnswerBody> call = service.loadComment(text);
+    public void loadReview(String text, String date) {
+        Call<AnswerBody> call = service.loadComment(text, date);
         call.enqueue(new Callback<AnswerBody>() {
             @Override
             public void onResponse(@NonNull Call<AnswerBody> call, @NonNull Response<AnswerBody> response) {

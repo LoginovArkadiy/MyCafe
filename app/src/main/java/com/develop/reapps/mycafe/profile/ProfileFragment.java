@@ -1,6 +1,7 @@
 package com.develop.reapps.mycafe.profile;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,6 +36,7 @@ import com.develop.reapps.mycafe.server.products.ProductClient;
 import com.develop.reapps.mycafe.server.retrofit.Requests;
 import com.develop.reapps.mycafe.server.sections.Section;
 import com.develop.reapps.mycafe.server.sections.SectionTask;
+import com.develop.reapps.mycafe.server.user.User;
 import com.develop.reapps.mycafe.server.user.UserClient;
 import com.develop.reapps.mycafe.server.workers.WorkerClient;
 import com.develop.reapps.mycafe.workers.Worker;
@@ -50,6 +52,7 @@ import java.util.List;
 import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment {
+    private static final String LOGIN = "LOGIN";
     private static final int GALLERY_REQUEST = 1;
     public static final String APP_PREFERENCES = "profile";
     public static final String APP_PREFERENCES_USERNAME = "username";
@@ -63,9 +66,9 @@ public class ProfileFragment extends Fragment {
     private Context context;
     private View rootView;
     private Bitmap bitmap;
-    private Uri uri;
     private SharedPreferences myProfile;
     private Section[] menuSections;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -113,10 +116,17 @@ public class ProfileFragment extends Fragment {
         setButtonListeners();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setButtonListeners() {
-        rootView.findViewById(R.id.bt_login).setOnClickListener(view -> Requests.makeToastNotification(context, signIn()));
-        rootView.findViewById(R.id.bt_exit).setOnClickListener(view -> Requests.makeToastNotification(context, logout()));
-        rootView.findViewById(R.id.bt_sign_up).setOnClickListener(view -> Requests.makeToastNotification(context, signUp()));
+        Button btLogin = rootView.findViewById(R.id.bt_login);
+        btLogin.setOnClickListener(view -> Requests.makeToastNotification(context, signIn()));
+        Button btExit = rootView.findViewById(R.id.bt_exit);
+        btExit.setOnClickListener(view -> Requests.makeToastNotification(context, logout()));
+        Button btSignUp = rootView.findViewById(R.id.bt_sign_up);
+        btSignUp.setOnClickListener(view -> Requests.makeToastNotification(context, signUp()));
+        btExit.setOnTouchListener(MainActivity.onTouchListener);
+        btLogin.setOnTouchListener(MainActivity.onTouchListener);
+        btSignUp.setOnTouchListener(MainActivity.onTouchListener);
     }
 
     private void deserialization() {
@@ -129,10 +139,13 @@ public class ProfileFragment extends Fragment {
             String login = myProfile.getString(APP_PREFERENCES_USERNAME, "");
             String password = myProfile.getString(APP_PREFERENCES_PASSWORD, "");
 
+            if (login.equals(LOGIN) || login.equals("")) {
+                User user = new UserClient(context).getUserByEmail(email);
+                login = user.getLogin();
+            }
             UserInfo.email = email;
             UserInfo.login = login;
             UserInfo.password = password;
-
             tvUsername.setText(login);
             tvEmail.setText(email);
         } else {
@@ -146,8 +159,10 @@ public class ProfileFragment extends Fragment {
     private int signIn() {
         String email = editEmailLogin.getText().toString();
         String password = editPasswordLogin.getText().toString();
+        User user = new UserClient(context).getUserByEmail(email);
+        String login = user == null ? "ЛОГИН" : user.getLogin();
         int status = new UserClient(context).signIn(email, password);
-        if (status == 200) safeData(email, password, "ЛОГИН");
+        if (status == 200) safeData(email, password, login);
         return status;
     }
 
@@ -213,6 +228,7 @@ public class ProfileFragment extends Fragment {
         setAdminListeners(productView, workerView, newsView, typesView, spinner);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setAdminListeners(View productView, View workerView, View newsView, View typesView, Spinner spinner) {
         setChangeSrcImageViewClickListener(productView.findViewById(R.id.image_add_product));
         setChangeSrcImageViewClickListener(workerView.findViewById(R.id.image_add_worker));
@@ -264,9 +280,9 @@ public class ProfileFragment extends Fragment {
         for (Section section : menuSections) {
             allSections.add(section.getSection());
         }
-        allSections.add("News");
-        allSections.add("Workers");
-        allSections.add("Section");
+        allSections.add("Новости");
+        allSections.add("Сотрудники");
+        allSections.add("Секция меню");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, allSections);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -335,7 +351,6 @@ public class ProfileFragment extends Fragment {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    this.uri = selectedImage;
                     setImage(bitmap);
                 }
         }
@@ -353,8 +368,6 @@ public class ProfileFragment extends Fragment {
         }
 
         try {
-
-
             file.createNewFile();
 
             FileOutputStream fos = new FileOutputStream(file);

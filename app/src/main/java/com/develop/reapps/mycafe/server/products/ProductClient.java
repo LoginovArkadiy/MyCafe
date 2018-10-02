@@ -3,6 +3,7 @@ package com.develop.reapps.mycafe.server.products;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.develop.reapps.mycafe.Product;
 import com.develop.reapps.mycafe.server.AnswerBody;
@@ -52,11 +53,12 @@ public class ProductClient {
         }
     }
 
+
     public Product[] getProductsByType(String type) {
         ProductGetTask task = new ProductGetTask();
         task.execute(type);
         try {
-            return task.get(2, TimeUnit.SECONDS);
+            return task.get(10, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -67,6 +69,7 @@ public class ProductClient {
         }
         return new Product[0];
     }
+
     private static class ProductPostTask extends AsyncTask<Product, Void, Response<AnswerBody>> {
         @Override
         protected Response<AnswerBody> doInBackground(Product... products) {
@@ -83,9 +86,12 @@ public class ProductClient {
                 Call<AnswerBody> uploadCall = uploadsService.loadPicture3(body, reqDescription);
                 Integer imageId = Objects.requireNonNull(uploadCall.execute().body()).id;
 
+                Log.i("Load_Product", "type = " + type + "\n name = " + name + "\n description = " + description + "\n weight = " + weight + "\n price = " + price + "\n imageId = " + imageId);
                 Call<AnswerBody> callProduct = productService.loadProduct(type, name, price, description, weight);
                 Integer productId = Objects.requireNonNull(callProduct.execute().body()).id;
 
+                Call<AnswerBody> callAccess = productService.setPublicAccess(productId, true);
+                callAccess.execute();
                 Call<AnswerBody> callEditImage = productService.editImage(productId, imageId);
                 return callEditImage.execute();
             } catch (IOException e) {
@@ -93,6 +99,8 @@ public class ProductClient {
             }
             return null;
         }
+
+
     }
 
     private static class ProductGetTask extends AsyncTask<String, Void, Product[]> {
@@ -101,7 +109,8 @@ public class ProductClient {
         protected Product[] doInBackground(String... strings) {
             Call<Product[]> call = productService.getProducts(strings[0]);
             try {
-                return call.execute().body();
+                Response<Product[]> response = call.execute();
+                if (response.isSuccessful()) return response.body();
             } catch (IOException e) {
 
             }

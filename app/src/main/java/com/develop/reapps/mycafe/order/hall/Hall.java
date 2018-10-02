@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,7 +35,7 @@ public class Hall extends View {
         for (int i = 0; i < 3; i++) {
             TableView tv = new TableView(context);
             tv.setNumber(String.valueOf(i + 1));
-            tv.moveD(100 + i * 300, 100 + i * 300);
+            tv.move(100 + i * 300, 100 + i * 300);
             views.add(tv);
         }
 
@@ -71,12 +70,12 @@ public class Hall extends View {
     }
 
     protected void addView(MyView view) {
-//        view.setMyOnClickListener(v -> {
-//
-//            long time1 = ((TableView) view).getPreTime();
-//            long time2 = Calendar.getInstance().getTimeInMillis();
-//            if (time2 - time1 < 1000L) dialog.show();
-//        });
+        view.setMyOnClickListener(v -> {
+
+            long time1 = ((TableView) view).getPreTime();
+            long time2 = Calendar.getInstance().getTimeInMillis();
+            if (time2 - time1 < 1000L) dialog.show();
+        });
         views.add(0, view);
         invalidate();
     }
@@ -95,24 +94,30 @@ public class Hall extends View {
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (nowTouch == null) {
+                if (nowTouch != null) {
+                    if (nowTouch.getAngle() == 0)
+                        views.get(nowTouch.getIndex()).move(event.getX(), event.getY());
+                    else
+                        views.get(nowTouch.getIndex()).changeMas(event.getX(), event.getY(), nowTouch.getAngle());
+                } else {
                     int x1 = (int) event.getX();
                     int y1 = (int) event.getY();
                     for (MyView view : views) {
                         int dx = x1 - x0, dy = y1 - y0;
                         Point nowPosition = view.getCenter();
-                        view.moveD(nowPosition.x + dx, nowPosition.y + dy);
+                        view.move(nowPosition.x + dx, nowPosition.y + dy);
 
                     }
                     x0 = x1;
                     y0 = y1;
-                }else{
-                    ((TableView)views.get(nowTouch.getIndex())).onTouchEvent(event);
                 }
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                nowTouch = null;
+                if (nowTouch != null) {
+                    views.get(nowTouch.getIndex()).stop();
+                    nowTouch = null;
+                }
                 break;
         }
 
@@ -134,8 +139,7 @@ public class Hall extends View {
         return null;
     }
 
-
     public interface OnClickTableListener {
-        void clickTable(int numberTable);
+        void clickTable(int number);
     }
 }

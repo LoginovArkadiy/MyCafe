@@ -24,13 +24,14 @@ public class Product {
     private String strType;
     @SerializedName("imageId")
     private int imageId;
+    @SerializedName("type")
+    String menuSection;
 
-    private int myDrawableId;
+    private Integer myDrawableId;
 
 
     private File file;
     private String edition;
-    private int type;
     private int count;
     private Bitmap bitmap;
 
@@ -43,7 +44,6 @@ public class Product {
         this.weight = weight;
         count = 0;
         edition = "";
-        type = 0;
     }
 
     public Product(String name, String description, int price, int weight, String strType, File file) {
@@ -56,17 +56,16 @@ public class Product {
         edition = "";
     }
 
-    public int getType() {
-        return type;
-    }
 
     @Override
     public int hashCode() {
+        if (edition == null) edition = "";
         return name.hashCode() + edition.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
+
         Product p2 = (Product) obj;
         return name.equals(p2.getName()) && edition.equals(p2.getEdition());
     }
@@ -105,6 +104,7 @@ public class Product {
     }
 
     public int getMyDrawableId() {
+        if (myDrawableId == null) myDrawableId = R.drawable.reapps;
         return myDrawableId;
     }
 
@@ -121,8 +121,13 @@ public class Product {
         if (bitmap == null) {
             bitmap = new UploadClient().getImageById(imageId);
         }
-
         return bitmap;
+    }
+
+
+
+    public void setImageBitmap(android.widget.ImageView imageView) {
+        new UploadClient().setImageBitmap(imageView, imageId);
     }
 
     public File getFile() {

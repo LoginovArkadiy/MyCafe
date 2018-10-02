@@ -21,7 +21,7 @@
         android:layout_weight="1"
         android:ems="10"
         android:hint="Название"
-        android:inputType="textPersonName" />
+        android:inputType="textShortMessage" />
 
     <EditText
         android:id="@+id/description_add_news"
@@ -31,7 +31,7 @@
         android:layout_weight="1"
         android:ems="10"
         android:hint="Текст"
-        android:inputType="textLongMessage" />
+        android:inputType="textMultiLine|textLongMessage" />
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"

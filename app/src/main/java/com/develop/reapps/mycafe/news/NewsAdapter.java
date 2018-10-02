@@ -36,15 +36,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
     public void onBindViewHolder(@NonNull NewsHolder holder, int position) {
         New myNew = listNews.get(position);
         Log.i("NEW_ADAPTER", position + " " + myNew.getName());
-       // if (myNew.getBitmap() == null) holder.imageView.setImageResource(myNew.getDrawableId());
-      //  else holder.imageView.setImageBitmap(myNew.getBitmap());
-/*
-        if (myNew.getImageView() == null) myNew.setImageBitmap(holder.imageView);
-        else holder.imageView = myNew.getImageView();*/
 
         holder.imageView.setImageResource(myNew.getDrawableId());
         myNew.setImageBitmap(holder.imageView);
-       // holder.imageView.setImageBitmap(myNew.getBitmap());
         holder.title.setText(myNew.getName());
         holder.description.setText(myNew.getDescription());
         holder.time.setText(myNew.getTime());

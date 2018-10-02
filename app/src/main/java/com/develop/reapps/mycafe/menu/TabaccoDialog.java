@@ -1,9 +1,11 @@
 package com.develop.reapps.mycafe.menu;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -44,6 +46,7 @@ public class TabaccoDialog {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void createDialog() {
         AlertDialog.Builder ad = new AlertDialog.Builder(context);
         View view = inflater.inflate(R.layout.taste_tabacco_dialog, null);
@@ -52,12 +55,15 @@ public class TabaccoDialog {
         for (CheckBox checkBox : list) {
             group.addView(checkBox);
         }
-        view.findViewById(R.id.bt_post_taste).setOnClickListener(v -> {
+        Button btPost = view.findViewById(R.id.bt_post_taste);
+        Button btAdd = view.findViewById(R.id.bt_add_taste);
+
+        btPost.setOnClickListener(v -> {
             Toast.makeText(context, "Вкус добавлен", Toast.LENGTH_SHORT).show();
             editText.setText("");
         });
 
-        view.findViewById(R.id.bt_add_taste).setOnClickListener(v -> {
+        btAdd.setOnClickListener(v -> {
             StringBuilder edition = new StringBuilder();
             for (CheckBox checkBox : list) {
                 if (checkBox.isChecked())
@@ -68,6 +74,9 @@ public class TabaccoDialog {
             listener.addProductToBasket(product, 1);
             dialog.cancel();
         });
+
+        btAdd.setOnTouchListener(MainActivity.onTouchListener);
+        btPost.setOnTouchListener(MainActivity.onTouchListener);
         view.findViewById(R.id.admin_taste).setVisibility(MainActivity.ADMIN ? View.VISIBLE : View.GONE);
         ad.setTitle("Выберите вкус табака").setView(view).setCancelable(true);
         dialog = ad.create();

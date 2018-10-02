@@ -16,12 +16,12 @@ public interface NewsService {
     @FormUrlEncoded
     @POST("/api/news")
     Call<AnswerBody> loadNew(@Field("header") String header,
-                             @Field("text") String text);
+                             @Field("text") String text,
+                             @Field("date") String date);
 
     @FormUrlEncoded
     @POST("/api/news/{id}/edit/image")
     Call<AnswerBody> putImage(@Path("id") int id, @Field("imageId") int imageId);
-
 
 
     //все новости

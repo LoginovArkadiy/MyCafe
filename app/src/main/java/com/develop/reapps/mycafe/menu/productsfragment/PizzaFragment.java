@@ -13,13 +13,10 @@ import android.view.ViewGroup;
 
 import com.develop.reapps.mycafe.Product;
 import com.develop.reapps.mycafe.R;
-import com.develop.reapps.mycafe.menu.ProductRecycleAdapter;
+import com.develop.reapps.mycafe.menu.ProductAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,7 +39,7 @@ public class PizzaFragment extends Fragment {
 
     private void initList() {
         RecyclerView listView = rootView.findViewById(R.id.list_product);
-        ProductRecycleAdapter adapter = new ProductRecycleAdapter();
+        ProductAdapter adapter = new ProductAdapter();
         listView.setLayoutManager(new LinearLayoutManager(context, 1, false));
         listView.setAdapter(adapter);
         adapter.addProducts(createBeginProducts());

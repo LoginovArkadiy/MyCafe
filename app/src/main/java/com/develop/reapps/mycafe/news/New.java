@@ -21,28 +21,24 @@ public class New {
     private int imageId;
     @SerializedName("id")
     private int id;
+    @SerializedName("date")
+    private String time;
 
     // private ImageView imageView;
 
     File file;
     private Integer drawableId;
-    private String time;
     private Bitmap bitmap;
 
 
-    public New(String name, String description, String time, File file) {
+    public New(String name, String description, String time,  File file) {
         this.name = name;
         this.description = description;
         this.time = time;
         this.file = file;
     }
 
-    public New(String name, String description, int drawableId, String time) {
-        this.name = name;
-        this.description = description;
-        this.drawableId = drawableId;
-        this.time = time;
-    }
+
 
     public Bitmap getBitmap() {
         if (bitmap == null) {
@@ -68,7 +64,7 @@ public class New {
     }
 
     public int getDrawableId() {
-        if (drawableId == null) drawableId = R.drawable.ic_launcher_foreground;
+        if (drawableId == null) drawableId = R.drawable.reapps;
         return drawableId;
     }
 

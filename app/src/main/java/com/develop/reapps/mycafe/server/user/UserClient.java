@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 
 import com.develop.reapps.mycafe.MainActivity;
 import com.develop.reapps.mycafe.server.AnswerBody;
-import com.develop.reapps.mycafe.server.products.ProductService;
 import com.develop.reapps.mycafe.server.retrofit.Requests;
 
 import java.io.IOException;
@@ -96,10 +95,38 @@ public class UserClient {
             e.printStackTrace();
         } catch (TimeoutException e) {
             e.printStackTrace();
+            Requests.makeToastNotification(context, "TimeOut User");
         }
         return null;
     }
 
+    public User getUserByEmail(String email) {
+        UserGetEmailTask task = new UserGetEmailTask();
+        task.execute(email);
+        try {
+            return task.get(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+            Requests.makeToastNotification(context, "TimeOut User");
+        } return null;
+    }
+
+    private static class UserGetEmailTask extends AsyncTask<String, Void, User> {
+        @Override
+        protected User doInBackground(String... strings) {
+            Call<User> call = userService.getUser(strings[0]);
+            try {
+                return call.execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
 
     private static class UserGetIdTask extends AsyncTask<Integer, Void, User> {
         @Override
