@@ -3,10 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".profile.admin.WorksAddFragment"
+
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/image_add_worker"
+        android:id="@+id/image_edit"
         android:layout_width="128dp"
         android:layout_height="128dp"
         android:layout_weight="1"
@@ -19,8 +22,8 @@
         android:layout_marginTop="10dp"
         android:layout_weight="1"
         android:ems="10"
-        android:hint="E-mail"
-        android:inputType="textEmailAddress" />
+        android:hint="Название"
+        android:inputType="textPersonName" />
 
     <EditText
         android:id="@+id/post_worker"
@@ -39,7 +42,7 @@
         android:layout_marginTop="10dp"
         android:layout_weight="1"
         android:ems="10"
-        android:hint="Роль [1..10]"
+        android:hint="Номер телефонв"
         android:inputType="number|numberDecimal" />
 
     <android.support.v7.widget.CardView
@@ -51,7 +54,7 @@
         app:cardElevation="3dp">
 
         <Button
-            android:id="@+id/bt_post_worker"
+            android:id="@+id/add_edit"
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

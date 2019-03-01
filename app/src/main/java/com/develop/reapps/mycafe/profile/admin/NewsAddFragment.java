@@ -1,65 +1,77 @@
 package com.develop.reapps.mycafe.profile.admin;
 
 
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 
+import com.develop.reapps.mycafe.MyBitmapConverter;
 import com.develop.reapps.mycafe.R;
+import com.develop.reapps.mycafe.profile.FileUtils;
+import com.develop.reapps.mycafe.server.news.NewsClient;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link NewsAddFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.io.IOException;
+
+import static android.app.Activity.RESULT_OK;
+
+
 public class NewsAddFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-
-    public NewsAddFragment() {
-        // Required empty public constructor
+    private Context context;
+    private Bitmap bitmap;
+    private ImageView imageView;
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.add_news_layout, container, false);
+        context = getContext();
+        initView(view);
+        return view;
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment NewsAddFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static NewsAddFragment newInstance(String param1, String param2) {
-        NewsAddFragment fragment = new NewsAddFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    private void initView(View newsView) {
+        EditText textName = newsView.findViewById(R.id.title_add_news);
+        EditText textDescription = newsView.findViewById(R.id.description_add_news);
+        imageView = newsView.findViewById(R.id.image_edit);
+        imageView.setOnClickListener(v -> {
+            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+            photoPickerIntent.setType("image/*");
+            startActivityForResult(photoPickerIntent, AdminFragment.GALLERY_REQUEST);
+        });
+        newsView.findViewById(R.id.bt_post_news).setOnClickListener(v -> {
+            String name = textName.getText().toString();
+            String description = textDescription.getText().toString();
+            new NewsClient(context).loadNew(name, description, FileUtils.getFile(name, context, bitmap));
+        });
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case AdminFragment.GALLERY_REQUEST:
+                if (resultCode == RESULT_OK) {
+                    Uri selectedImage = data.getData();
+
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), selectedImage);
+                        if (bitmap.getWidth() > 1000) {
+                            bitmap = MyBitmapConverter.resizeBItmap(bitmap, bitmap.getWidth() / 500);
+                        }
+                        imageView.setImageURI(selectedImage);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
         }
     }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_news_add, container, false);
-    }
-
 }

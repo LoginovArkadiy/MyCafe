@@ -22,7 +22,6 @@ import com.develop.reapps.mycafe.profile.FileUtils;
 import com.develop.reapps.mycafe.server.retrofit.Requests;
 import com.develop.reapps.mycafe.server.tabaccos.TobaccoClient;
 
-import java.io.File;
 import java.io.IOException;
 
 import static android.app.Activity.RESULT_OK;
@@ -35,7 +34,7 @@ public class TobaccoAddFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tobacco_add, container, false);
+        View view = inflater.inflate(R.layout.add_tobacco_layout, container, false);
         context = getContext();
         initView(view);
         return view;

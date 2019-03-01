@@ -28,34 +28,12 @@
 
     </LinearLayout>
 
-    <include
-        android:id="@+id/product_include"
-        layout="@layout/add_product_layout"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/fragment_admin_adder__view_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_weight="1"
-        android:visibility="gone" />
+        android:layout_height="wrap_content">
 
-    <include
-        android:id="@+id/worker_include"
-        layout="@layout/addworker_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+    </android.support.v4.view.ViewPager>
 
-    <include
-        android:id="@+id/news_include"
-        layout="@layout/add_news_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
-
-    <include
-        android:id="@+id/types_include"
-        layout="@layout/add_types_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
 
 </LinearLayout>
