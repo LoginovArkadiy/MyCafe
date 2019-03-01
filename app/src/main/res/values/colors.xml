@@ -6,4 +6,5 @@
     <color name="white">#f9f8f8</color>
     <color name="ltgrey">#ecebeb</color>
     <color name="green">#285f00</color>
+    <color name="black">#FF000000</color>
 </resources>

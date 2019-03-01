@@ -5,7 +5,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -15,8 +14,8 @@ import android.widget.TextView;
 
 import com.develop.reapps.mycafe.MainActivity;
 import com.develop.reapps.mycafe.OnAddProductListener;
-import com.develop.reapps.mycafe.Product;
 import com.develop.reapps.mycafe.R;
+import com.develop.reapps.mycafe.menu.element.Product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +55,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductM
             if (isTabac) {
                 showDialog(context, product, inflater);
             } else {
-
                 OnAddProductListener listener = (OnAddProductListener) context;
                 listener.addProductToBasket(product, 1);
             }
@@ -64,7 +62,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductM
         holder.buttonAdd.setOnTouchListener(MainActivity.onTouchListener);
 
         holder.layout.setOnClickListener(v -> {
-
             showDialog(context, product, inflater);
         });
 

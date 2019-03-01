@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="164dp"
             android:layout_gravity="center"
-            app:srcCompat="@drawable/pizza" />
+            app:srcCompat="@drawable/reapps" />
 
         <TextView
             android:id="@+id/alert_name_product"

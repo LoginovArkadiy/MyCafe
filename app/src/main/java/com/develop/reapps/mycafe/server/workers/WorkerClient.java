@@ -109,7 +109,7 @@ public class WorkerClient {
 
             try {
                 Call<User> userCall = userService.getUser(email);
-                Integer id = Objects.requireNonNull(userCall.execute().body()).id;
+                Integer id = Objects.requireNonNull(userCall.execute().body()).getId();
 
                 Call<AnswerBody> callEditPost = workerService.loadWorker(id, post);
                 Integer workerId = Objects.requireNonNull(callEditPost.execute().body()).id;

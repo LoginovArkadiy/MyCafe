@@ -11,11 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.develop.reapps.mycafe.Product;
+import com.develop.reapps.mycafe.menu.element.Product;
 import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.menu.ProductAdapter;
+import com.develop.reapps.mycafe.server.tabaccos.TobaccoClient;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -45,14 +46,15 @@ public class MaffinFragment extends Fragment {
 
 
     private List<Product> createBeginProducts() {
-        List<Product> products = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
+       /* for (int i = 0; i < 3; i++) {
             products.add(new Product("РРРРРР", "Порычим на 200 ррррублей?", R.drawable.maffin, (int) (Math.random() * 500 + 150), (int) (Math.random() * 500 + 150)));
             products.add(new Product("Милашка", "За твоим столиком будет милый хотя бы кекс", R.drawable.maffintwo, (int) (Math.random() * 500 + 150), (int) (Math.random() * 500 + 150)));
             products.add(new Product("Хнык", "Не плачь - не ты одна жирная", R.drawable.maffinthree, (int) (Math.random() * 500 + 150), (int) (Math.random() * 500 + 150)));
             products.add(new Product("Angryer", "Не злись, в следующий раз победим)", R.drawable.maffinfour, (int) (Math.random() * 500 + 150), (int) (Math.random() * 500 + 150)));
-        }
-        return products;
+        }*/
+
+        Product[] tabacs = new TobaccoClient(context).getTobaccos();
+        return Arrays.asList(tabacs);
     }
 
 

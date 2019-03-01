@@ -1,6 +1,6 @@
 package com.develop.reapps.mycafe.order.basket;
 
-import com.develop.reapps.mycafe.Product;
+import com.develop.reapps.mycafe.menu.element.Product;
 
 import java.util.HashMap;
 

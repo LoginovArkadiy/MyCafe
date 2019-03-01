@@ -61,7 +61,7 @@ public class UserClient {
             e.printStackTrace();
         } catch (TimeoutException e) {
             e.printStackTrace();
-            Requests.makeToastNotification(context, "Timeout");
+            Requests.makeToastNotification(context, "Timeout SignUp");
         }
         return -1;
     }
@@ -79,7 +79,7 @@ public class UserClient {
             e.printStackTrace();
         } catch (TimeoutException e) {
             e.printStackTrace();
-            Requests.makeToastNotification(context, "Timeout");
+            Requests.makeToastNotification(context, "Timeout SignIn");
         }
         return -1;
     }
@@ -95,7 +95,7 @@ public class UserClient {
             e.printStackTrace();
         } catch (TimeoutException e) {
             e.printStackTrace();
-            Requests.makeToastNotification(context, "TimeOut User");
+            Requests.makeToastNotification(context, "TimeOut getUserById");
         }
         return null;
     }
@@ -111,7 +111,7 @@ public class UserClient {
             e.printStackTrace();
         } catch (TimeoutException e) {
             e.printStackTrace();
-            Requests.makeToastNotification(context, "TimeOut User");
+            Requests.makeToastNotification(context, "TimeOut getUserByEmail");
         } return null;
     }
 

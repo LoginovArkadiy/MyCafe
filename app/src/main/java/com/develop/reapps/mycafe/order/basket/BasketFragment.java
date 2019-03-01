@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.develop.reapps.mycafe.MainActivity;
 import com.develop.reapps.mycafe.R;
-import com.develop.reapps.mycafe.Product;
+import com.develop.reapps.mycafe.menu.element.Product;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +46,7 @@ public class BasketFragment extends Fragment {
         return rootView;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setListeners() {
         Button bCreateOrder = rootView.findViewById(R.id.create_order);
         bCreateOrder.setOnClickListener(v -> ((OnCreateOrderListener) context).createOrder());

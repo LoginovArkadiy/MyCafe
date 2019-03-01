@@ -10,11 +10,12 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Requests {
-    public final static String baseUrl = "http://62.109.23.83/";
+    public final static String baseUrl = "http://185.43.6.57/";
 
 
     public static void makeToastNotification(Context context, Integer status) {
-        String s = status == 200 ? "OK" : (status < 500 ? "Здесь что-то пошло не так" : "Там что-то пошло не так");
+
+        String s = status == null || status != 200 ? (status != null && status < 500 ? "Здесь что-то пошло не так" : "Там что-то пошло не так") : "OK";
         Toast.makeText(context, s + "\n" + status, Toast.LENGTH_SHORT).show();
     }
 
@@ -23,23 +24,15 @@ public class Requests {
     }
 
 
-
     private static Retrofit retrofit = null;
 
     public static Retrofit getClient() {
-        if (retrofit==null) {
-            OkHttpClient.Builder okHttpClient = new OkHttpClient().newBuilder()
-                    .connectTimeout(60 * 5, TimeUnit.SECONDS)
-                    .readTimeout(60 * 5, TimeUnit.SECONDS)
-                    .writeTimeout(60 * 5, TimeUnit.SECONDS);
+        if (retrofit == null) {
+            OkHttpClient.Builder okHttpClient = new OkHttpClient().newBuilder().connectTimeout(60 * 5, TimeUnit.SECONDS).readTimeout(60 * 5, TimeUnit.SECONDS).writeTimeout(60 * 5, TimeUnit.SECONDS);
             okHttpClient.interceptors().add(new AddCookiesInterceptor());
             okHttpClient.interceptors().add(new ReceivedCookiesInterceptor());
 
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(baseUrl)
-                    .client(okHttpClient.build())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+            retrofit = new Retrofit.Builder().baseUrl(baseUrl).client(okHttpClient.build()).addConverterFactory(GsonConverterFactory.create()).build();
         }
         return retrofit;
     }

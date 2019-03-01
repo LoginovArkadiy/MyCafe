@@ -1,13 +1,18 @@
 package com.develop.reapps.mycafe;
 
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +23,7 @@ import android.view.View;
 import android.widget.Toast;
 
 
+import com.develop.reapps.mycafe.menu.element.Product;
 import com.develop.reapps.mycafe.order.Order;
 import com.develop.reapps.mycafe.order.OrderFragment;
 import com.develop.reapps.mycafe.order.basket.BasketFragment;
@@ -28,24 +34,41 @@ import com.develop.reapps.mycafe.order.hall.Hall;
 import com.develop.reapps.mycafe.order.hall.HallFragment;
 import com.develop.reapps.mycafe.order.hall.tabletime.TableFragment;
 import com.develop.reapps.mycafe.order.show.OrdersActivity;
-import com.develop.reapps.mycafe.profile.ProfileFragment;
+import com.develop.reapps.mycafe.profile.MainProfileFragment;
+import com.develop.reapps.mycafe.profile.OnProfileDataListener;
 import com.develop.reapps.mycafe.reviews.ReviewActivity;
 import com.develop.reapps.mycafe.server.order.OrderTask;
 import com.develop.reapps.mycafe.server.retrofit.Requests;
+import com.develop.reapps.mycafe.server.user.User;
+import com.develop.reapps.mycafe.server.user.UserClient;
 import com.develop.reapps.mycafe.workers.WorkersFragment;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements OnAddProductListener, BasketFragment.OnClearBasketListener, BasketAdapter.OnChangeCountProductListener, BasketFragment.OnCreateOrderListener, Hall.OnClickTableListener, OnBackHomeInterface, TableFragment.OnPostOrderListener {
+public class MainActivity extends AppCompatActivity implements OnAddProductListener, BasketFragment.OnClearBasketListener, BasketAdapter.OnChangeCountProductListener, BasketFragment.OnCreateOrderListener, Hall.OnClickTableListener, OnBackHomeInterface, TableFragment.OnPostOrderListener, OnProfileDataListener {
+
+    public static final String APP_PREFERENCES = "profile";
+    public static final String APP_PREFERENCES_EMAIL = "email";
+
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
+    private SharedPreferences myProfile;
 
     HashMap<Product, Integer> mapProducts;
     public static boolean ADMIN;
     private BottomNavigationView navigation;
-    OrderFragment orderFragment;
+    private OrderFragment orderFragment;
+    private MainProfileFragment profileFragment;
     static Context context;
 
     Order nowOrder;
+    private User user;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -57,13 +80,34 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
         navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_home);
-        getSupportFragmentManager().beginTransaction().add(R.id.rootfragment, new NewsFragment()).commit();
-        getSupportFragmentManager().beginTransaction().replace(R.id.rootfragment, new ProfileFragment()).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.rootfragment, new MainProfileFragment()).commit();
+        //  getSupportFragmentManager().beginTransaction().replace(R.id.rootfragment, new ProfileFragment()).commit();
+        profileFragment = new MainProfileFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.rootfragment, profileFragment).commit();
         mapProducts = new HashMap<>();
-        ADMIN = false;
         context = this;
 
+        myProfile = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
+        user = deserialization();
+        if (user != null) {
+            ADMIN = user.getRole() > 1;
+        }
+        verifyStoragePermissions(this);
+    }
+
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );
+        }
     }
 
     @Override
@@ -100,7 +144,8 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = (item -> {
         switch (item.getItemId()) {
             case R.id.navigation_home:
-                changeFragment(new ProfileFragment());
+                profileFragment = new MainProfileFragment();
+                changeFragment(profileFragment);
                 return true;
             case R.id.navigation_workers:
                 changeFragment(new WorkersFragment());
@@ -137,6 +182,9 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
         ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_right);
         ft.replace(R.id.rootfragment, fragment);
         ft.commit();
+
+
+        deleteCache(context);
     }
 
     @Override
@@ -200,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
     @Override
     public void backToHome() {
         navigation.setSelectedItemId(R.id.navigation_home);
-        changeFragment(new ProfileFragment());
+        changeFragment(new MainProfileFragment());
     }
 
 
@@ -219,4 +267,65 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
     public static Context getAppContext() {
         return context;
     }
+
+    @Override
+    public void safeData(String email) {
+        Requests.makeToastNotification(context, "Слхранение данных");
+        if (email != null) {
+            SharedPreferences.Editor editor = myProfile.edit();
+            editor.putString(APP_PREFERENCES_EMAIL, email);
+            editor.apply();
+            profileFragment = new MainProfileFragment();
+            backToHome();
+
+            user = deserialization();
+            if (user != null) {
+                ADMIN = user.getRole() > 1;
+            }
+        }
+    }
+
+    @Override
+    public User deserialization() {
+        if (user != null) return user;
+        if (myProfile.contains(APP_PREFERENCES_EMAIL)) {
+            Requests.makeToastNotification(context, "Десериализация");
+            return new UserClient(context).getUserByEmail(myProfile.getString(APP_PREFERENCES_EMAIL, ""));
+        }
+        return null;
+    }
+
+    @Override
+    public void removeData() {
+        Requests.makeToastNotification(context, "Удаление данных");
+        SharedPreferences.Editor editor = myProfile.edit();
+        editor.remove(APP_PREFERENCES_EMAIL);
+        editor.apply();
+        user = null;
+        backToHome();
+    }
+
+    public static void deleteCache(Context context) {
+        // File dir = context.getCacheDir();
+        //deleteDir(dir);
+    }
+
+    public static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+            return dir.delete();
+        } else if (dir != null && dir.isFile()) {
+            return dir.delete();
+        } else {
+            return false;
+        }
+    }
+
+
 }

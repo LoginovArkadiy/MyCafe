@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.develop.reapps.mycafe.Product;
+import com.develop.reapps.mycafe.menu.element.Product;
 import com.develop.reapps.mycafe.R;
 
 import java.util.ArrayList;

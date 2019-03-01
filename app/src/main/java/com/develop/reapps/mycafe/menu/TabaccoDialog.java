@@ -13,10 +13,15 @@ import android.widget.Toast;
 
 import com.develop.reapps.mycafe.MainActivity;
 import com.develop.reapps.mycafe.OnAddProductListener;
-import com.develop.reapps.mycafe.Product;
 import com.develop.reapps.mycafe.R;
+import com.develop.reapps.mycafe.menu.element.Product;
+import com.develop.reapps.mycafe.server.tabaccos.TobaccoClient;
+import com.develop.reapps.mycafe.server.tastes.Taste;
+import com.develop.reapps.mycafe.server.tastes.TasteClient;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class TabaccoDialog {
     private AlertDialog dialog;
@@ -24,6 +29,9 @@ public class TabaccoDialog {
     private LayoutInflater inflater;
     private Product product;
     private ArrayList<CheckBox> list;
+    private LinearLayout group;
+
+    HashMap<String, Integer> hmIds;
 
     public TabaccoDialog(Context context, Product product, LayoutInflater inflater) {
         this.context = context;
@@ -36,30 +44,48 @@ public class TabaccoDialog {
 
     private void initList() {
         list = new ArrayList<>();
-        String[] texts = new String[]{"Admiral Acbar Cereal - оригинальный вкус овсяяных хлопьев", "Applecot - зелёное яблоко", "BananaPapa - очень сладкий банан, вкус на любителя", "Exstragon - напиток тархун, насыщенный, не очень сладкий", "Generis Cherry - Вишня", "Gonzo Mint - свежий вкус смеси мят", "Lemonblast - неплохой лимон один из топовых фруктов", "Mary Jane - интересный травяной вкус", "Red Tea - чай каркаде с корицей"};
-
-        for (int i = 0; i < 9; i++) {
-            CheckBox checkBox = new CheckBox(context);
-            checkBox.setTextSize(15);
-            checkBox.setText(texts[i]);
-            list.add(checkBox);
+        Taste[] tastes = new TasteClient(context).getTastes(product.getId());
+        hmIds = new HashMap<>(tastes.length);
+        for (Taste taste : tastes) {
+            hmIds.put(taste.getName(), taste.getId());
+            list.add(createBox(taste));
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+
     private void createDialog() {
         AlertDialog.Builder ad = new AlertDialog.Builder(context);
         View view = inflater.inflate(R.layout.taste_tabacco_dialog, null);
-        EditText editText = view.findViewById(R.id.edit_taste);
-        LinearLayout group = view.findViewById(R.id.taste_group);
+        group = view.findViewById(R.id.taste_group);
         for (CheckBox checkBox : list) {
             group.addView(checkBox);
         }
+
+        EditText editText = view.findViewById(R.id.edit_taste);
         Button btPost = view.findViewById(R.id.bt_post_taste);
         Button btAdd = view.findViewById(R.id.bt_add_taste);
+        Button btDelete = view.findViewById(R.id.bt_delete_tobacco);
+        setListeners(btPost, btAdd, btDelete, editText);
+
+        view.findViewById(R.id.admin_taste).setVisibility(MainActivity.ADMIN ? View.VISIBLE : View.GONE);
+        view.findViewById(R.id.bt_delete_tobacco).setVisibility(MainActivity.ADMIN ? View.VISIBLE : View.GONE);
+        ad.setTitle("Выберите вкус табака").setView(view).setCancelable(true);
+        dialog = ad.create();
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void setListeners(Button btPost, Button btAdd, Button btDelete, EditText editText) {
 
         btPost.setOnClickListener(v -> {
             Toast.makeText(context, "Вкус добавлен", Toast.LENGTH_SHORT).show();
+            String taste = editText.getText().toString();
+            if (taste.length() > 0) {
+                new TasteClient(context).loadTaste(taste, product.getId());
+                CheckBox checkBox = new CheckBox(context);
+                checkBox.setTextSize(15);
+                checkBox.setText(taste);
+                group.addView(checkBox);
+            }
             editText.setText("");
         });
 
@@ -75,15 +101,37 @@ public class TabaccoDialog {
             dialog.cancel();
         });
 
+        btDelete.setOnClickListener(v -> {
+            List<Integer> listChecked = new ArrayList<>();
+            for (CheckBox checkBox : list) {
+                if (checkBox.isChecked()) {
+                    listChecked.add(hmIds.get(checkBox.getText().toString()));
+                }
+            }
+
+            if (listChecked.size() > 0) {
+                TasteClient tasteClient = new TasteClient(context);
+                for (int id : listChecked) {
+                    tasteClient.delete(id);
+                }
+            } else {
+                new TobaccoClient(context).delete(product.getId());
+            }
+        });
+
         btAdd.setOnTouchListener(MainActivity.onTouchListener);
         btPost.setOnTouchListener(MainActivity.onTouchListener);
-        view.findViewById(R.id.admin_taste).setVisibility(MainActivity.ADMIN ? View.VISIBLE : View.GONE);
-        ad.setTitle("Выберите вкус табака").setView(view).setCancelable(true);
-        dialog = ad.create();
+        btDelete.setOnTouchListener(MainActivity.onTouchListener);
     }
-
 
     private void showDialog() {
         dialog.show();
+    }
+
+    private CheckBox createBox(Taste taste) {
+        CheckBox checkBox = new CheckBox(context);
+        checkBox.setTextSize(15);
+        checkBox.setText(taste.getName());
+        return checkBox;
     }
 }

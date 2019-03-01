@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.develop.reapps.mycafe.Product;
+import com.develop.reapps.mycafe.menu.element.Product;
 import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.menu.ProductAdapter;
 import com.develop.reapps.mycafe.server.products.ProductClient;

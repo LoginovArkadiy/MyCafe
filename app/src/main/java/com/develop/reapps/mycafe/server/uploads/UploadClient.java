@@ -11,6 +11,7 @@ import com.develop.reapps.mycafe.MyBitmapConverter;
 import com.develop.reapps.mycafe.server.retrofit.Requests;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -54,7 +55,8 @@ public class UploadClient {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull retrofit2.Response<ResponseBody> response) {
                 try {
-                    imageView.setImageBitmap(MyBitmapConverter.getBitmapfromByteArray(response.body().bytes()));
+                    if (response.isSuccessful())
+                        imageView.setImageBitmap(MyBitmapConverter.getBitmapfromByteArray(Objects.requireNonNull(response.body()).bytes()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -14,8 +13,9 @@ import android.widget.Toast;
 
 import com.develop.reapps.mycafe.MainActivity;
 import com.develop.reapps.mycafe.OnAddProductListener;
-import com.develop.reapps.mycafe.Product;
 import com.develop.reapps.mycafe.R;
+import com.develop.reapps.mycafe.menu.element.Product;
+import com.develop.reapps.mycafe.server.products.ProductClient;
 
 public class MenuProductDialog {
     private AlertDialog dialog;
@@ -36,7 +36,8 @@ public class MenuProductDialog {
             view.findViewById(R.id.card_remove).setVisibility(View.VISIBLE);
             Button bRemove = view.findViewById(R.id.button_remove);
             bRemove.setOnClickListener(v -> {
-                Toast.makeText(context, "Продукт удалён", Toast.LENGTH_SHORT).show();
+                new ProductClient(context).delete(product.getId());
+                //Toast.makeText(context, "Продукт удалён", Toast.LENGTH_SHORT).show();
                 dialog.cancel();
             });
             bRemove.setOnTouchListener(MainActivity.onTouchListener);

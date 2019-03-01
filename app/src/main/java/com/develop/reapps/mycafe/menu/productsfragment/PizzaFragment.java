@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.develop.reapps.mycafe.Product;
+import com.develop.reapps.mycafe.menu.element.Product;
 import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.menu.ProductAdapter;
 
@@ -50,13 +50,13 @@ public class PizzaFragment extends Fragment {
 
     private List<Product> createBeginProducts() {
         List<Product> products = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
+        /*for (int i = 0; i < 3; i++) {
             products.add(new Product("Маргарита", "Очень вкусно сытно 700 грамммммммм", R.drawable.pizza, (int) (Math.random() * 500 + 150), (int) (Math.random() * 500 + 150)));
             products.add(new Product("Жаркое солнце", "Сладкий ВКУСНЫЙ AND BEATY 200ГРАММ", R.drawable.pizzathree, (int) (Math.random() * 500 + 150), (int) (Math.random() * 500 + 150)));
             products.add(new Product("Кукусисики", "Покуапаешь один кукусик второй в подарок", R.drawable.pizzatwo, (int) (Math.random() * 500 + 150), (int) (Math.random() * 500 + 150)));
             products.add(new Product("Ащщщ", "Ащщщ горит в рту и не тольуо", R.drawable.pizzafour, (int) (Math.random() * 500 + 150), (int) (Math.random() * 500 + 150)));
             products.add(new Product("Кек", "Будешь орать", R.drawable.pizzafive, (int) (Math.random() * 500 + 150), (int) (Math.random() * 500 + 150)));
-        }
+        }*/
         return products;
     }
 

@@ -22,7 +22,7 @@
             android:id="@+id/face_worker"
             android:layout_width="144dp"
             android:layout_height="144dp"
-            app:srcCompat="@drawable/bart" />
+            app:srcCompat="@drawable/reapps" />
 
         <LinearLayout
             android:layout_width="match_parent"

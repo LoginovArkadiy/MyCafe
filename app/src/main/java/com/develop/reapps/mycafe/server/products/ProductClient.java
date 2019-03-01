@@ -5,10 +5,9 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.develop.reapps.mycafe.Product;
+import com.develop.reapps.mycafe.menu.element.Product;
 import com.develop.reapps.mycafe.server.AnswerBody;
 import com.develop.reapps.mycafe.server.retrofit.Requests;
-import com.develop.reapps.mycafe.server.sections.SectionsService;
 import com.develop.reapps.mycafe.server.uploads.UploadsService;
 
 import java.io.File;
@@ -53,6 +52,21 @@ public class ProductClient {
         }
     }
 
+    public void delete(int id) {
+        Call<AnswerBody> call = productService.delete(id);
+        call.enqueue(new Callback<AnswerBody>() {
+            @Override
+            public void onResponse(@NonNull Call<AnswerBody> call, @NonNull Response<AnswerBody> response) {
+                Requests.makeToastNotification(context, response.code());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<AnswerBody> call, @NonNull Throwable t) {
+
+            }
+        });
+
+    }
 
     public Product[] getProductsByType(String type) {
         ProductGetTask task = new ProductGetTask();

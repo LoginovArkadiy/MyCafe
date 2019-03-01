@@ -39,8 +39,8 @@ public class NewsClient {
         this(MainActivity.getAppContext());
     }
 
-    public void loadNew(String name, String description, String date, File file) {
-        date = MyDateConverter.getMoment();
+    public void loadNew(String name, String description,  File file) {
+        String date = MyDateConverter.getMoment();
         New myNew = new New(name, description, date, file);
         NewPostTask task = new NewPostTask();
         task.execute(myNew);
@@ -86,14 +86,16 @@ public class NewsClient {
             File f = myNew.getFile();
 
             RequestBody reqFile = RequestBody.create(MediaType.parse("multipart/form-data"), f);
-            MultipartBody.Part body = MultipartBody.Part.createFormData("picture", title + ".png", reqFile);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("picture", f.getName(), reqFile);
             RequestBody reqDescription = RequestBody.create(MediaType.parse("multipart/form-data"), description);
 
             try {
                 Call<AnswerBody> uploadCall = uploadsService.loadPicture3(body, reqDescription);
                 Integer imageId = Objects.requireNonNull(uploadCall.execute().body()).id;
+
                 Call<AnswerBody> call = newsService.loadNew(title, description, date);
                 Integer id = Objects.requireNonNull(call.execute().body()).id;
+
                 Call<AnswerBody> call2 = newsService.putImage(id, imageId);
                 return call2.execute().code();
             } catch (IOException e) {

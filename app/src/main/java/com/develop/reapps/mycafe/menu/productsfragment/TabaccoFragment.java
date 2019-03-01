@@ -12,11 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.develop.reapps.mycafe.Product;
+import com.develop.reapps.mycafe.menu.element.Product;
 import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.menu.ProductAdapter;
+import com.develop.reapps.mycafe.server.tabaccos.TobaccoClient;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -50,16 +51,16 @@ public class TabaccoFragment extends Fragment {
 
 
     private List<Product> createBeginProducts() {
-        List<Product> list = new ArrayList<>();
-        String s = "Какое то длинное описание чтоб было покрасивше напишу побольше ы - ЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫ";
-        for (int i = 0; i < 3; i++) {
+       /* for (int i = 0; i < 3; i++) {
             list.add(new Product("DarkSide", s, R.drawable.darkside, (int) (Math.random() * 500 + 150), 0));
             list.add(new Product("ВТО", s, R.drawable.tabac, (int) (Math.random() * 500 + 150), 0));
             list.add(new Product("Argelini", s, R.drawable.argelini, (int) (Math.random() * 500 + 150), 0));
             list.add(new Product("Serbetli", s, R.drawable.serbetli, (int) (Math.random() * 500 + 150), 0));
             list.add(new Product("Daily Hookah", s, R.drawable.hookah, (int) (Math.random() * 500 + 150),0));
-        }
-        return list;
+        }/*/
+
+        Product[] tabacs = new TobaccoClient(context).getTobaccos();
+        return Arrays.asList(tabacs);
     }
 
 }

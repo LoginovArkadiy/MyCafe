@@ -1,15 +1,15 @@
 package com.develop.reapps.mycafe.server.products;
 
-import com.develop.reapps.mycafe.Product;
+import com.develop.reapps.mycafe.menu.element.Product;
 import com.develop.reapps.mycafe.server.AnswerBody;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 
 public interface ProductService {
@@ -34,6 +34,10 @@ public interface ProductService {
 
     @POST("api/menu/{id}/edit/publicaccess/{flag}")
     Call<AnswerBody> setPublicAccess(@Path("id") int id, @Path("flag") boolean flag);
+
+    @POST("api/menu/delete/{id}")
+    Call<AnswerBody> delete(@Path("id") int id);
+
 
     @FormUrlEncoded
     @POST("api/menu/{id}/edit/image")
