@@ -2,13 +2,14 @@ package com.develop.reapps.mycafe.profile;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ViewPagerAdapter extends FragmentStatePagerAdapter {
+public class ViewPagerAdapter extends FragmentPagerAdapter {
     private List<Page> pageList;
 
 
@@ -35,7 +36,6 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
     public void addPage(Fragment fragment, String title) {
         pageList.add(new Page(fragment, title));
-        notifyDataSetChanged();
     }
 
     public List<Page> getPageList() {
@@ -62,6 +62,12 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         }
 
         public String getTitle() {
+            return title;
+        }
+
+
+        @Override
+        public String toString() {
             return title;
         }
     }

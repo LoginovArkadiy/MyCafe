@@ -3,6 +3,7 @@ package com.develop.reapps.mycafe.server.workers;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 
 import com.develop.reapps.mycafe.MainActivity;
 import com.develop.reapps.mycafe.server.AnswerBody;
@@ -14,6 +15,7 @@ import com.develop.reapps.mycafe.workers.Worker;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -43,44 +45,95 @@ public class WorkerClient {
         this(MainActivity.getAppContext());
     }
 
-    public void loadWorker(Worker worker) {
-        WorkerPostTask task = new WorkerPostTask();
-        task.execute(worker);
-        try {
-            Requests.makeToastNotification(context, task.get(5, TimeUnit.SECONDS));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-            Requests.makeToastNotification(context, "Timeout Workers");
-        }
+    public void getWorkerByEmail(Worker worker) {
+        String email = worker.getEmail();
+        UserService service = retrofit.create(UserService.class);
+        Call<User> userCall = service.getUser(email);
+        userCall.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                Requests.makeToastNotification(context, response);
+                if (response.isSuccessful() && response.body() != null) {
+                    testLoadWorker(worker, response.body().getId());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+            }
+        });
+
     }
 
-    public Worker[] getWorkers() {
-        WorkersGetTask task = new WorkersGetTask();
-        task.execute();
-        try {
-            Worker[] workers = task.get(10, TimeUnit.SECONDS);
-            return workers == null ? new Worker[0] : workers;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-            Requests.makeToastNotification(context, "TimeOut Workers");
-        }
-        return new Worker[0];
+    private void testLoadWorker(Worker worker, int id) {
+        String post = worker.getPost();
+        File file = worker.getFile();
+
+        RequestBody reqFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("picture", file.getName() + ".png", reqFile);
+        RequestBody reqId = RequestBody.create(MediaType.parse("multipart/form-data"), Integer.toString(id));
+        RequestBody reqPost = RequestBody.create(MediaType.parse("multipart/form-data"), post);
+
+        Call<AnswerBody> call = workerService.loadWorker2(reqId, reqPost, body);
+        call.enqueue(new Callback<AnswerBody>() {
+            @Override
+            public void onResponse(@NonNull Call<AnswerBody> call, @NonNull Response<AnswerBody> response) {
+                Requests.makeToastNotification(context, response);
+                if (response.isSuccessful() && response.body() != null) {
+                    editRole(worker, response.body().id);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<AnswerBody> call, @NonNull Throwable t) {
+            }
+        });
     }
+
+    private void editRole(Worker worker, int id) {
+        Call<AnswerBody> call = workerService.editRole(id, worker.getRole());
+        call.enqueue(new Callback<AnswerBody>() {
+            @Override
+            public void onResponse(@NonNull Call<AnswerBody> call, @NonNull Response<AnswerBody> response) {
+                Requests.makeToastNotification(context, response);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<AnswerBody> call, @NonNull Throwable t) {
+
+            }
+        });
+
+
+    }
+
+    public void getWorkers(List<Worker> list, RecyclerView.Adapter adapter) {
+        Call<List<Worker>> call = workerService.getWorkers();
+        call.enqueue(new Callback<List<Worker>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Worker>> call, @NonNull Response<List<Worker>> response) {
+                Requests.makeToastNotification(context, response);
+                if (response.isSuccessful() && response.body() != null) {
+                    list.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Worker>> call, @NonNull Throwable t) {
+            }
+        });
+
+
+    }
+
 
     public void changeTime(boolean isWorkToday, int id) {
         Call<AnswerBody> call = workerService.changeWorkTime(isWorkToday, id);
         call.enqueue(new Callback<AnswerBody>() {
             @Override
             public void onResponse(@NonNull Call<AnswerBody> call, @NonNull Response<AnswerBody> response) {
-                Requests.makeToastNotification(context, response.code());
+                Requests.makeToastNotification(context, response);
             }
 
             @Override
@@ -90,55 +143,5 @@ public class WorkerClient {
         });
     }
 
-    private static class WorkerPostTask extends AsyncTask<Worker, Void, Integer> {
-        @Override
-        protected Integer doInBackground(Worker... workers) {
-            Retrofit retrofit = Requests.getClient();
-            UserService userService = retrofit.create(UserService.class);
-            WorkerService workerService = retrofit.create(WorkerService.class);
-            UploadsService uploadsService = retrofit.create(UploadsService.class);
 
-            int role = workers[0].getRole();
-            String post = workers[0].getPost();
-            String email = workers[0].getEmail();
-            File f = workers[0].getFile();
-
-            RequestBody reqFile = RequestBody.create(MediaType.parse("multipart/form-data"), f);
-            MultipartBody.Part body = MultipartBody.Part.createFormData("picture", email + ".png", reqFile);
-            RequestBody reqDescription = RequestBody.create(MediaType.parse("multipart/form-data"), post);
-
-            try {
-                Call<User> userCall = userService.getUser(email);
-                Integer id = Objects.requireNonNull(userCall.execute().body()).getId();
-
-                Call<AnswerBody> callEditPost = workerService.loadWorker(id, post);
-                Integer workerId = Objects.requireNonNull(callEditPost.execute().body()).id;
-
-                Call<AnswerBody> callEditRole = workerService.editRole(workerId, role);
-                AnswerBody answerBody = callEditRole.execute().body();
-
-                Call<AnswerBody> uploadCall = uploadsService.loadPicture3(body, reqDescription);
-                Integer imageId = Objects.requireNonNull(uploadCall.execute().body()).id;
-
-                Call<AnswerBody> callEditImage = workerService.editImage(workerId, imageId);
-                return callEditImage.execute().code();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return -1;
-        }
-
-    }
-
-    private static class WorkersGetTask extends AsyncTask<Void, Void, Worker[]> {
-        @Override
-        protected Worker[] doInBackground(Void... voids) {
-            Call<Worker[]> call = workerService.getWorkers();
-            try {
-                return call.execute().body();
-            } catch (IOException e) {
-                return new Worker[0];
-            }
-        }
-    }
 }

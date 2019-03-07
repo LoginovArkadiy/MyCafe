@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.server.retrofit.Requests;
+import com.develop.reapps.mycafe.server.sections.SectionClient;
 import com.develop.reapps.mycafe.server.tastes.TasteClient;
 
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
                 return true;
             }
             AlertDialog.Builder ad = new AlertDialog.Builder(context);
-            ad.setCancelable(true).setTitle("Вы уверены что хотите удалить эту секцию?").setPositiveButton("Да", (dialog, which) -> new TasteClient(context).delete(id));
+            ad.setCancelable(true).setTitle("Вы уверены что хотите удалить эту секцию?").setPositiveButton("Да", (dialog, which) -> new SectionClient(context).delete(id));
             ad.create().show();
             Requests.makeToastNotification(context, "Вы нажали на " + title);
             return true;
@@ -93,29 +94,30 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         tabLayout.setScrollPosition(position, 0f, true);
         viewPager.setCurrentItem(position);
     }
+    class Page {
+        private Fragment fragment;
+        private String title;
+        private View view;
+
+        Page(Fragment fragment, String title, View view) {
+            this.fragment = fragment;
+            this.title = title;
+            this.view = view;
+        }
+
+        public View getTabView() {
+            return view;
+        }
+
+        public Fragment getFragment() {
+            return fragment;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+    }
 }
 
-class Page {
-    private Fragment fragment;
-    private String title;
-    private View view;
 
-    Page(Fragment fragment, String title, View view) {
-        this.fragment = fragment;
-        this.title = title;
-        this.view = view;
-    }
-
-    public View getTabView() {
-        return view;
-    }
-
-    public Fragment getFragment() {
-        return fragment;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-}
 

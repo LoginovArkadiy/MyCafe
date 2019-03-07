@@ -22,11 +22,11 @@ import java.util.List;
 
 public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.WorkerHolder> {
     private Context context;
-    private ArrayList<Worker> list;
+    private List<Worker> list;
 
 
-    public WorkersAdapter() {
-        list = new ArrayList<>();
+    public WorkersAdapter(List<Worker> list) {
+        this.list = list;
     }
 
     @NonNull
@@ -46,8 +46,7 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.WorkerHo
         holder.twName.setText(worker.getName());
         holder.twOffice.setText(worker.getPost());
         holder.layout.setVisibility(worker.isWorkToday() ? View.VISIBLE : View.INVISIBLE);
-        if(MainActivity.ADMIN)
-        holder.view.setOnLongClickListener(v -> {
+        if (MainActivity.ADMIN) holder.view.setOnLongClickListener(v -> {
             worker.setWorkToday(!worker.isWorkToday());
             new WorkerClient(context).changeTime(worker.isWorkToday(), worker.getId());
             Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);

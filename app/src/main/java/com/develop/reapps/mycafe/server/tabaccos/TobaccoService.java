@@ -1,6 +1,6 @@
 package com.develop.reapps.mycafe.server.tabaccos;
 
-import com.develop.reapps.mycafe.menu.element.Tabac;
+import com.develop.reapps.mycafe.menu.element.Tobacco;
 import com.develop.reapps.mycafe.server.AnswerBody;
 
 import retrofit2.Call;
@@ -36,5 +36,5 @@ public interface TobaccoService {
     Call<AnswerBody> delete(@Path("id") int id);
 
     @GET("api/tobacco")
-    Call<Tabac[]> getTabaccos();
+    Call<Tobacco[]> getTabaccos();
 }

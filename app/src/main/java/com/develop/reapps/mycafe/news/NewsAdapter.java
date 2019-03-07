@@ -20,8 +20,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsHolder> {
 
     private Context context;
 
-    public NewsAdapter() {
-        listNews = new ArrayList<>();
+    public NewsAdapter(List<New> listNews) {
+        this.listNews = listNews;
     }
 
     @NonNull

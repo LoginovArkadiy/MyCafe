@@ -1,6 +1,7 @@
 package com.develop.reapps.mycafe.profile.admin;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.develop.reapps.mycafe.MyBitmapConverter;
+import com.develop.reapps.mycafe.MyTouchListener;
 import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.profile.FileUtils;
 import com.develop.reapps.mycafe.server.retrofit.Requests;
@@ -40,8 +42,9 @@ public class TobaccoAddFragment extends Fragment {
         return view;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initView(View view) {
-        Button tobaccoButton = view.findViewById(R.id.bt_post_tabacco);
+        Button button = view.findViewById(R.id.bt_post_tabacco);
         EditText textName = view.findViewById(R.id.name_add_tabacco);
         EditText textPrice = view.findViewById(R.id.price_add_tabacco);
         EditText textDescription = view.findViewById(R.id.description_add_tabacco);
@@ -52,7 +55,7 @@ public class TobaccoAddFragment extends Fragment {
             startActivityForResult(photoPickerIntent, AdminFragment.GALLERY_REQUEST);
         });
 
-        tobaccoButton.setOnClickListener(v -> {
+        button.setOnClickListener(v -> {
             Requests.makeToastNotification(context, "ТАБАКИ");
             String name = textName.getText().toString();
             String price = textPrice.getText().toString();
@@ -64,6 +67,7 @@ public class TobaccoAddFragment extends Fragment {
             }
             new TobaccoClient(context).loadTobacco(name, Integer.parseInt(price), description, FileUtils.getFile(name, context, bitmap));
         });
+        button.setOnTouchListener(new MyTouchListener());
     }
 
     @Override

@@ -3,18 +3,20 @@ package com.develop.reapps.mycafe.server.tabaccos;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.develop.reapps.mycafe.MainActivity;
-import com.develop.reapps.mycafe.menu.element.Tabac;
+import com.develop.reapps.mycafe.menu.element.Product;
+import com.develop.reapps.mycafe.menu.element.Tobacco;
 import com.develop.reapps.mycafe.server.AnswerBody;
 import com.develop.reapps.mycafe.server.retrofit.Requests;
 import com.develop.reapps.mycafe.server.uploads.UploadsService;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -45,7 +47,7 @@ public class TobaccoClient {
 
     public void loadTobacco(String name, int price, String description, File file) {
         TobaccoPostTask task = new TobaccoPostTask();
-        task.execute(new Tabac(name, description, price, file));
+        task.execute(new Tobacco(name, description, price, file));
 //        Call<AnswerBody> callTobacco = tobaccoService.loadTobacco(name, price, description);
 //        callTobacco.enqueue(new Callback<AnswerBody>() {
 //            @Override
@@ -76,21 +78,21 @@ public class TobaccoClient {
     }
 
 
-    private void uploadFile(int tobaccoId, File file , String description){
+    private void uploadFile(int tobaccoId, File file, String description) {
         RequestBody reqDescription = RequestBody.create(MultipartBody.FORM, description);
 
         RequestBody reqFile = RequestBody.create(MediaType.parse("image/jpg"), file);
         MultipartBody.Part body = MultipartBody.Part.createFormData("picture", file.getName(), reqFile);
         UploadsService uploadsService = retrofit.create(UploadsService.class);
-        Log.d("tobacco" , "file1 " );
+        Log.d("tobacco", "file1 ");
 
         Call<AnswerBody> callUploads = uploadsService.loadPicture3(body, reqDescription);
-        Log.d("tobacco" , "file2 " );
+        Log.d("tobacco", "file2 ");
 
         callUploads.enqueue(new Callback<AnswerBody>() {
             @Override
             public void onResponse(@NonNull Call<AnswerBody> call, @NonNull Response<AnswerBody> response) {
-                Log.d("tobacco" , "file3 " + response.body());
+                Log.d("tobacco", "file3 " + response.body());
 
                 if (response.body() != null) {
                     editTobacco(tobaccoId, response.body().id);
@@ -106,7 +108,7 @@ public class TobaccoClient {
         });
     }
 
-    private void editTobacco(int tobaccoId, int imageID){
+    private void editTobacco(int tobaccoId, int imageID) {
         Call<AnswerBody> callEditImage = tobaccoService.editImage(tobaccoId, imageID);
         callEditImage.enqueue(new Callback<AnswerBody>() {
             @Override
@@ -138,7 +140,7 @@ public class TobaccoClient {
     }
 
 
-    public Tabac[] getTobaccos() {
+    public Tobacco[] getTobaccos() {
         TobaccoGetTask task = new TobaccoGetTask();
         task.execute();
         try {
@@ -151,18 +153,37 @@ public class TobaccoClient {
             e.printStackTrace();
             Requests.makeToastNotification(context, "TimeOut Tobaccos");
         }
-        return new Tabac[0];
+        return new Tobacco[0];
     }
 
-    private static class TobaccoPostTask extends AsyncTask<Tabac, Void, Integer> {
+    public void getTobaccos(List<Product> tobaccos, RecyclerView.Adapter adapter) {
+        Call<Tobacco[]> call = tobaccoService.getTabaccos();
+        call.enqueue(new Callback<Tobacco[]>() {
+            @Override
+            public void onResponse(@NonNull Call<Tobacco[]> call, @NonNull Response<Tobacco[]> response) {
+                Requests.makeToastNotification(context, response.code() + " " + response.message());
+                if (response.isSuccessful() && response.body() != null) {
+                    tobaccos.addAll(Arrays.asList(response.body()));
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Tobacco[]> call, @NonNull Throwable t) {
+
+            }
+        });
+    }
+
+    private static class TobaccoPostTask extends AsyncTask<Tobacco, Void, Integer> {
 
         @Override
-        protected Integer doInBackground(Tabac... tabacs) {
-            Tabac tabac = tabacs[0];
-            String name = tabac.getName();
-            String description = tabac.getName();
-            int price = tabac.getPrice();
-            File f = tabac.getFile();
+        protected Integer doInBackground(Tobacco... tobaccos) {
+            Tobacco tobacco = tobaccos[0];
+            String name = tobacco.getName();
+            String description = tobacco.getName();
+            int price = tobacco.getPrice();
+            File f = tobacco.getFile();
             Log.d("TobaccoClient", "file = " + f.getPath());
             RequestBody reqDescription = RequestBody.create(MultipartBody.FORM, description);
 
@@ -211,20 +232,20 @@ public class TobaccoClient {
         }
     }
 
-    private static class TobaccoGetTask extends AsyncTask<Void, Void, Tabac[]> {
+    private static class TobaccoGetTask extends AsyncTask<Void, Void, Tobacco[]> {
 
         @Override
-        protected Tabac[] doInBackground(Void... voids) {
-            Call<Tabac[]> call = tobaccoService.getTabaccos();
+        protected Tobacco[] doInBackground(Void... voids) {
+            Call<Tobacco[]> call = tobaccoService.getTabaccos();
             try {
-                Response<Tabac[]> response = call.execute();
+                Response<Tobacco[]> response = call.execute();
                 if (response.code() == 200) {
                     return response.body();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return new Tabac[0];
+            return new Tobacco[0];
         }
     }
 }

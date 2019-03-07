@@ -3,12 +3,18 @@ package com.develop.reapps.mycafe.server.products;
 import com.develop.reapps.mycafe.menu.element.Product;
 import com.develop.reapps.mycafe.server.AnswerBody;
 
+import java.util.List;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 
@@ -23,9 +29,11 @@ public interface ProductService {
                                  @Field("weight") int weight
     );
 
+
+
     //все продукты
     @GET("api/menu/gets/type/{type}")
-    Call<Product[]> getProducts(@Path("type") String type);
+    Call<List<Product>> getProducts(@Path("type") String type);
 
     //возвращает продукт по id
     @GET("api/menu/get/id/{id}")
@@ -43,5 +51,14 @@ public interface ProductService {
     @POST("api/menu/{id}/edit/image")
     Call<AnswerBody> editImage(@Path("id") int id, @Field("imageId") int imageId);
 
+
+    @Multipart
+    @POST("test/menu")
+    Call<AnswerBody> testLoadProduct(@Part MultipartBody.Part body,
+                                     @Part("name") RequestBody name,
+                                     @Part("description") RequestBody description,
+                                     @Part("type") RequestBody type,
+                                     @Part("price") RequestBody price,
+                                     @Part("weight") RequestBody weight);
 
 }

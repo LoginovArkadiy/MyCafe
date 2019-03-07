@@ -2,6 +2,9 @@ package com.develop.reapps.mycafe.server.news;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.widget.Adapter;
 
 import com.develop.reapps.mycafe.MainActivity;
 import com.develop.reapps.mycafe.MyDateConverter;
@@ -12,6 +15,7 @@ import com.develop.reapps.mycafe.server.uploads.UploadsService;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +25,7 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
@@ -39,85 +44,42 @@ public class NewsClient {
         this(MainActivity.getAppContext());
     }
 
-    public void loadNew(String name, String description,  File file) {
+    public void loadNew(String name, String description, File file) {
         String date = MyDateConverter.getMoment();
-        New myNew = new New(name, description, date, file);
-        NewPostTask task = new NewPostTask();
-        task.execute(myNew);
-        try {
-            Requests.makeToastNotification(context, task.get(10, TimeUnit.SECONDS));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-            Requests.makeToastNotification(context, "Timeout");
-        }
-    }
-
-    public New[] getNews() {
-        NewGetTask task = new NewGetTask();
-        task.execute();
-        try {
-            return task.get(5, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-            Requests.makeToastNotification(context, "TimeOut News");
-        }
-
-        return new New[0];
-    }
-
-    private static class NewPostTask extends AsyncTask<New, Void, Integer> {
-
-        @Override
-        protected Integer doInBackground(New... news) {
-            New myNew = news[0];
-            UploadsService uploadsService = retrofit.create(UploadsService.class);
-
-            String title = myNew.getName();
-            String description = myNew.getDescription();
-            String date = myNew.getTime();
-            File f = myNew.getFile();
-
-            RequestBody reqFile = RequestBody.create(MediaType.parse("multipart/form-data"), f);
-            MultipartBody.Part body = MultipartBody.Part.createFormData("picture", f.getName(), reqFile);
-            RequestBody reqDescription = RequestBody.create(MediaType.parse("multipart/form-data"), description);
-
-            try {
-                Call<AnswerBody> uploadCall = uploadsService.loadPicture3(body, reqDescription);
-                Integer imageId = Objects.requireNonNull(uploadCall.execute().body()).id;
-
-                Call<AnswerBody> call = newsService.loadNew(title, description, date);
-                Integer id = Objects.requireNonNull(call.execute().body()).id;
-
-                Call<AnswerBody> call2 = newsService.putImage(id, imageId);
-                return call2.execute().code();
-            } catch (IOException e) {
-                e.printStackTrace();
+        RequestBody reqFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("picture", file.getName(), reqFile);
+        RequestBody reqDescription = RequestBody.create(MediaType.parse("multipart/form-data"), description);
+        RequestBody reqName = RequestBody.create(MediaType.parse("multipart/form-data"), name);
+        RequestBody reqDate = RequestBody.create(MediaType.parse("multipart/form-data"), date);
+        Call<AnswerBody> callNews = newsService.testLoadNew(reqName, reqDescription, reqDate, body);
+        callNews.enqueue(new Callback<AnswerBody>() {
+            @Override
+            public void onResponse(@NonNull Call<AnswerBody> call, @NonNull Response<AnswerBody> response) {
+                Requests.makeToastNotification(context, response.code() + response.message());
             }
-            return -1;
-        }
-    }
 
-    private static class NewGetTask extends AsyncTask<Void, Void, New[]> {
-
-        @Override
-        protected New[] doInBackground(Void... voids) {
-            Call<New[]> call = newsService.getNews();
-            try {
-                New[] news = call.execute().body();
-                if (news == null) news = new New[0];
-                return news;
-            } catch (IOException e) {
-                e.printStackTrace();
+            @Override
+            public void onFailure(@NonNull Call<AnswerBody> call, @NonNull Throwable t) {
             }
-            return new New[0];
-        }
+        });
     }
+
+    public void getNews(List<New> list, RecyclerView.Adapter adapter) {
+        Call<List<New>> call = newsService.getNews();
+
+        call.enqueue(new Callback<List<New>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<New>> call, @NonNull Response<List<New>> response) {
+                Requests.makeToastNotification(context, response.code() + " " + response.message());
+                if (response.isSuccessful() && response.body() != null) {
+                    list.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<List<New>> call, @NonNull Throwable t) {
+            }
+        });
+    }
+
 }

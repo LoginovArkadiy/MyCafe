@@ -8,7 +8,6 @@ import com.develop.reapps.mycafe.server.AnswerBody;
 import com.develop.reapps.mycafe.server.retrofit.Requests;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -58,6 +57,20 @@ public class SectionClient {
         return new Section[0];
     }
 
+    public void delete(int id) {
+        Call<AnswerBody> call = sectionsService.delete(id);
+        call.enqueue(new Callback<AnswerBody>() {
+            @Override
+            public void onResponse(@NonNull Call<AnswerBody> call, @NonNull Response<AnswerBody> response) {
+                Requests.makeToastNotification(context, response);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<AnswerBody> call, @NonNull Throwable t) {
+            }
+        });
+    }
+
     private static class SectionGetTask extends AsyncTask<Void, Void, Section[]> {
         @Override
         protected Section[] doInBackground(Void... voids) {
@@ -67,9 +80,7 @@ public class SectionClient {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return  new Section[0];
+            return new Section[0];
         }
     }
-
-
 }

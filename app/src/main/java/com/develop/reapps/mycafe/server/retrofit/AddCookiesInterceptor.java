@@ -15,7 +15,6 @@ public class AddCookiesInterceptor implements Interceptor {
     @Override
     public Response intercept(@NonNull Interceptor.Chain chain) throws IOException {
         Request.Builder builder = chain.request().newBuilder();
-
         HashSet<String> preferences = Methods.getCookies(MainActivity.getAppContext());
         for (String cookie : preferences) {
             builder.addHeader("Cookie", cookie);

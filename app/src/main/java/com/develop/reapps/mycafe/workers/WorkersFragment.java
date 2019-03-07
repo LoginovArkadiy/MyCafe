@@ -14,6 +14,9 @@ import android.view.ViewGroup;
 import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.server.workers.WorkerClient;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class WorkersFragment extends Fragment {
 
     Context context;
@@ -35,20 +38,10 @@ public class WorkersFragment extends Fragment {
     private void initList() {
         RecyclerView listView = rootView.findViewById(R.id.list_workers);
         listView.setLayoutManager(new LinearLayoutManager(context, 1, false));
-        WorkersAdapter adapter = new WorkersAdapter();
+        List<Worker> list = new ArrayList<>();
+        WorkersAdapter adapter = new WorkersAdapter(list);
         listView.setAdapter(adapter);
 
-        Worker[] workers1 = new WorkerClient(context).getWorkers();
-      /*  workers.add(new Worker("Барт", "Бармен", R.drawable.bart, true));
-        workers.add(new Worker("Гомер", "Официант", R.drawable.gomer, true));
-        workers.add(new Worker("Мардж", "Администратор", R.drawable.wife, true));
-        workers.add(new Worker("Лиза", "Бармен", R.drawable.liza, false));
-        workers.add(new Worker("Нед", "Официант", R.drawable.ned, true));
-        workers.add(new Worker("Бёрнс", "Администратор", R.drawable.mrburns, false));
-        workers.add(new Worker("Милхаус", "Кассир", R.drawable.milhaus, true));
-*/
-        for (Worker w : workers1) {
-            adapter.addWorker(w);
-        }
+        new WorkerClient(context).getWorkers(list, adapter);
     }
 }

@@ -3,9 +3,12 @@ package com.develop.reapps.mycafe.server.retrofit;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.develop.reapps.mycafe.server.AnswerBody;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -35,5 +38,9 @@ public class Requests {
             retrofit = new Retrofit.Builder().baseUrl(baseUrl).client(okHttpClient.build()).addConverterFactory(GsonConverterFactory.create()).build();
         }
         return retrofit;
+    }
+
+    public static void makeToastNotification(Context context, Response response) {
+        Toast.makeText(context, response.code() + " " + response.message(), Toast.LENGTH_SHORT).show();
     }
 }

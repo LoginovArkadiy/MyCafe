@@ -17,23 +17,21 @@ import com.develop.reapps.mycafe.OnAddProductListener;
 import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.menu.element.Product;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductMenuHolder> {
     private List<Product> productList;
     private Context context;
     private LayoutInflater inflater;
-    boolean isTabac;
+    boolean isTobacco;
 
-    public ProductAdapter() {
-        productList = new ArrayList<>();
-        isTabac = false;
+    public ProductAdapter(List<Product> productList) {
+        this(productList, false);
     }
 
-    public ProductAdapter(boolean isTabac) {
-        productList = new ArrayList<>();
-        this.isTabac = isTabac;
+    public ProductAdapter(List<Product> productList, boolean isTobacco) {
+        this.productList = productList;
+        this.isTobacco = isTobacco;
     }
 
     @NonNull
@@ -52,7 +50,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductM
     public void onBindViewHolder(@NonNull ProductMenuHolder holder, int position) {
         Product product = productList.get(position);
         holder.buttonAdd.setOnClickListener(v -> {
-            if (isTabac) {
+            if (isTobacco) {
                 showDialog(context, product, inflater);
             } else {
                 OnAddProductListener listener = (OnAddProductListener) context;
@@ -74,7 +72,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductM
         holder.tvPrice.setText(product.getPrice() + " руб.");
         holder.tvWeight.setText(product.getWeight() + " г");
 
-        if (isTabac) {
+        if (isTobacco) {
             holder.tvWeight.setVisibility(View.INVISIBLE);
         }
     }
@@ -96,7 +94,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductM
     }
 
     private void showDialog(Context context, Product product, LayoutInflater inflater) {
-        if (isTabac) {
+        if (isTobacco) {
             new TabaccoDialog(context, product, inflater);
         } else {
             new MenuProductDialog(context, product, inflater);

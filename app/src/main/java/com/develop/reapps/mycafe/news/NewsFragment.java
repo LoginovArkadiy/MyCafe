@@ -15,35 +15,27 @@ import android.widget.LinearLayout;
 import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.server.news.NewsClient;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NewsFragment extends Fragment {
-
-    NewsAdapter adapter;
-
-    public NewsFragment() {
-    }
-
     private Context context;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news, container, false);
         context = getContext();
-
         RecyclerView recyclerView = view.findViewById(R.id.list_news);
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayout.VERTICAL, false));
-        adapter = new NewsAdapter();
+        List<New> list = new ArrayList<>();
+        NewsAdapter adapter = new NewsAdapter(list);
         recyclerView.setAdapter(adapter);
-        initList();
+        initList(list, adapter);
         return view;
     }
 
-    private void initList() {
-        New[] myNews = new NewsClient(context).getNews();
-        for(int i = myNews.length - 1; i > -1; i--){
-            adapter.addNew(myNews[i]);
-        }
-        adapter.notifyDataSetChanged();
+    private void initList(List<New> list, NewsAdapter adapter) {
+        new NewsClient(context).getNews(list, adapter);
     }
-
 
 }

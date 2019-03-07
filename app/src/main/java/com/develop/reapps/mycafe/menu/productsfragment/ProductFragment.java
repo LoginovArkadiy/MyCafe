@@ -16,20 +16,28 @@ import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.menu.ProductAdapter;
 import com.develop.reapps.mycafe.server.products.ProductClient;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ProductFragment extends Fragment {
     private View rootView;
     private Context context;
     public static String SECTION_KEY = "SECTION_KEY";
+    private String section;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        assert args != null;
+        section = args.getString(SECTION_KEY);
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         context = getContext();
-        Bundle args = getArguments();
-        assert args != null;
-        String section = args.getString(SECTION_KEY);
         rootView = inflater.inflate(R.layout.fragment_simple_menu, container, false);
         initList(section);
         return rootView;
@@ -37,16 +45,15 @@ public class ProductFragment extends Fragment {
 
     private void initList(String section) {
         RecyclerView listView = rootView.findViewById(R.id.list_product);
-        ProductAdapter adapter = new ProductAdapter();
+        List<Product> productList = new ArrayList<>();
+        ProductAdapter adapter = new ProductAdapter(productList);
         listView.setLayoutManager(new LinearLayoutManager(context, 1, false));
         listView.setAdapter(adapter);
-        adapter.addProducts(Arrays.asList(createBeginProducts(section)));
+        createBeginProducts(section, productList, adapter);
     }
 
-
-    private Product[] createBeginProducts(String section) {
-        return new ProductClient(context).getProductsByType(section);
+    private void createBeginProducts(String type, List<Product> productList, ProductAdapter adapter) {
+        new ProductClient(context).getProductsByType(type, productList, adapter);
     }
-
 
 }

@@ -1,5 +1,6 @@
 package com.develop.reapps.mycafe.profile.admin;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,10 +12,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.develop.reapps.mycafe.MyBitmapConverter;
+import com.develop.reapps.mycafe.MyTouchListener;
 import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.profile.FileUtils;
 import com.develop.reapps.mycafe.server.workers.WorkerClient;
@@ -39,10 +42,12 @@ public class WorksAddFragment extends Fragment {
         return view;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initView(View view) {
         EditText textEmail = view.findViewById(R.id.email_add_worker);
         EditText textPost = view.findViewById(R.id.post_add_worker);
         EditText textRole = view.findViewById(R.id.role_add_worker);
+        Button button = view.findViewById(R.id.bt_post_worker);
 
         imageView = view.findViewById(R.id.image_add_worker);
         imageView.setOnClickListener(v -> {
@@ -51,14 +56,14 @@ public class WorksAddFragment extends Fragment {
             startActivityForResult(photoPickerIntent, AdminFragment.GALLERY_REQUEST);
         });
 
-        view.findViewById(R.id.bt_post_worker).setOnClickListener(v -> {
+        button.setOnClickListener(v -> {
             String email = textEmail.getText().toString();
             String post = textPost.getText().toString();
             String role = textRole.getText().toString();
-            new WorkerClient(context).loadWorker(new Worker("Егор", post, email, Integer.parseInt(role), FileUtils.getFile(email, context, bitmap)));
+            new WorkerClient(context).getWorkerByEmail(new Worker("Егор", post, email, Integer.parseInt(role), FileUtils.getFile(email, context, bitmap)));
         });
+        button.setOnTouchListener(new MyTouchListener());
     }
-
 
 
     @Override

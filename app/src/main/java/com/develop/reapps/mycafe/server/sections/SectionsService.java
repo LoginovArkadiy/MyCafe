@@ -7,6 +7,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface SectionsService {
     @FormUrlEncoded
@@ -15,4 +16,7 @@ public interface SectionsService {
 
     @GET("/api/menuSections")
     Call<Section[]> getSections();
+
+    @POST("api/menuSections/delete/{id}")
+    Call<AnswerBody> delete(@Path("id") int id);
 }

@@ -52,11 +52,6 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
     public static final String APP_PREFERENCES = "profile";
     public static final String APP_PREFERENCES_EMAIL = "email";
 
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
 
     private SharedPreferences myProfile;
 
@@ -88,27 +83,10 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
         context = this;
 
         myProfile = context.getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-
-        user = deserialization();
-        if (user != null) {
-            ADMIN = user.getRole() > 1;
-        }
-        verifyStoragePermissions(this);
+        deserialization();
     }
 
-    public static void verifyStoragePermissions(Activity activity) {
-        // Check if we have write permission
-        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(
-                    activity,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_EXTERNAL_STORAGE
-            );
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -287,12 +265,12 @@ public class MainActivity extends AppCompatActivity implements OnAddProductListe
 
     @Override
     public User deserialization() {
-        if (user != null) return user;
-        if (myProfile.contains(APP_PREFERENCES_EMAIL)) {
+        if (user == null && myProfile.contains(APP_PREFERENCES_EMAIL)) {
             Requests.makeToastNotification(context, "Десериализация");
-            return new UserClient(context).getUserByEmail(myProfile.getString(APP_PREFERENCES_EMAIL, ""));
+            user = new UserClient(context).getUserByEmail(myProfile.getString(APP_PREFERENCES_EMAIL, ""));
+            ADMIN = user.getRole() > 1;
         }
-        return null;
+        return user;
     }
 
     @Override

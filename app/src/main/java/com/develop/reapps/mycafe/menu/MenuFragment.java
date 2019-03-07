@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.menu.productsfragment.ProductFragment;
-import com.develop.reapps.mycafe.menu.productsfragment.TabaccoFragment;
+import com.develop.reapps.mycafe.menu.productsfragment.TobaccoFragment;
 import com.develop.reapps.mycafe.server.sections.Section;
 import com.develop.reapps.mycafe.server.sections.SectionClient;
 
@@ -45,7 +45,7 @@ public class MenuFragment extends Fragment {
         // adapter.addPage(new PizzaFragment(), "Pizza");
         //adapter.addPage(new MaffinFragment(), "Маффины");
 
-        adapter.addPage(new TabaccoFragment(), "Табаки", -1);
+        adapter.addPage(new TobaccoFragment(), "Табаки", -1);
         for (Section section : sections) {
             Fragment productFragment = new ProductFragment();
             Bundle args = new Bundle();

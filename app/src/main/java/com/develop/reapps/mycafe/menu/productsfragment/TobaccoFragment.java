@@ -15,19 +15,21 @@ import android.widget.LinearLayout;
 import com.develop.reapps.mycafe.menu.element.Product;
 import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.menu.ProductAdapter;
+import com.develop.reapps.mycafe.menu.element.Tobacco;
 import com.develop.reapps.mycafe.server.tabaccos.TobaccoClient;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TabaccoFragment extends Fragment {
+public class TobaccoFragment extends Fragment {
     private View rootView;
     private Context context;
 
-    public TabaccoFragment() {
+    public TobaccoFragment() {
         // Required empty public constructor
     }
 
@@ -43,24 +45,16 @@ public class TabaccoFragment extends Fragment {
 
     private void initList() {
         RecyclerView listView = rootView.findViewById(R.id.list_product);
-        ProductAdapter adapter = new ProductAdapter(true);
+        List<Product> list = new ArrayList<>();
+        ProductAdapter adapter = new ProductAdapter(list, true);
         listView.setLayoutManager(new LinearLayoutManager(context, LinearLayout.VERTICAL, false));
         listView.setAdapter(adapter);
-        adapter.addProducts(createBeginProducts());
+        createBeginProducts(list, adapter);
     }
 
 
-    private List<Product> createBeginProducts() {
-       /* for (int i = 0; i < 3; i++) {
-            list.add(new Product("DarkSide", s, R.drawable.darkside, (int) (Math.random() * 500 + 150), 0));
-            list.add(new Product("ВТО", s, R.drawable.tabac, (int) (Math.random() * 500 + 150), 0));
-            list.add(new Product("Argelini", s, R.drawable.argelini, (int) (Math.random() * 500 + 150), 0));
-            list.add(new Product("Serbetli", s, R.drawable.serbetli, (int) (Math.random() * 500 + 150), 0));
-            list.add(new Product("Daily Hookah", s, R.drawable.hookah, (int) (Math.random() * 500 + 150),0));
-        }/*/
-
-        Product[] tabacs = new TobaccoClient(context).getTobaccos();
-        return Arrays.asList(tabacs);
+    private void createBeginProducts(List<Product> list, ProductAdapter adapter) {
+        new TobaccoClient(context).getTobaccos(list, adapter);
     }
 
 }

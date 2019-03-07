@@ -1,10 +1,14 @@
 package com.develop.reapps.mycafe.profile;
 
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -18,6 +22,9 @@ import com.develop.reapps.mycafe.server.user.User;
 import java.util.Objects;
 
 public class MainProfileFragment extends Fragment {
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
     private View rootView;
     private Context context;
     private ViewPager viewPager;
@@ -30,6 +37,7 @@ public class MainProfileFragment extends Fragment {
         context = getContext();
         initView();
         setData(deserialization());
+        verifyStoragePermissions(getActivity());
         return rootView;
     }
 
@@ -62,4 +70,10 @@ public class MainProfileFragment extends Fragment {
     }
 
 
+    public static void verifyStoragePermissions(Activity activity) {
+        int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
+        }
+    }
 }

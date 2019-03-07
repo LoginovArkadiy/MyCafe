@@ -1,6 +1,7 @@
 package com.develop.reapps.mycafe.profile.admin;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,10 +13,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.develop.reapps.mycafe.MyBitmapConverter;
+import com.develop.reapps.mycafe.MyTouchListener;
 import com.develop.reapps.mycafe.R;
 import com.develop.reapps.mycafe.profile.FileUtils;
 import com.develop.reapps.mycafe.server.products.ProductClient;
@@ -62,12 +65,14 @@ public class ProductAddFragment extends Fragment {
         return view;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initView(View view) {
 
         EditText textName = view.findViewById(R.id.name_add_product);
         EditText textWeight = view.findViewById(R.id.weight_add_product);
         EditText textPrice = view.findViewById(R.id.price_add_product);
         EditText textDescription = view.findViewById(R.id.description_add_product);
+        Button button = view.findViewById(R.id.bt_post_product);
 
         imageView = view.findViewById(R.id.image_add_product);
         imageView.setOnClickListener(v -> {
@@ -76,14 +81,21 @@ public class ProductAddFragment extends Fragment {
             startActivityForResult(photoPickerIntent, AdminFragment.GALLERY_REQUEST);
         });
 
-        view.findViewById(R.id.bt_post_product).setOnClickListener(v -> {
+        button.setOnClickListener(v -> {
             String name = textName.getText().toString();
             String weight = textWeight.getText().toString();
             String price = textPrice.getText().toString();
             String description = textDescription.getText().toString();
-            new ProductClient(context).loadProduct(name, description, type, Integer.parseInt(price), Integer.parseInt(weight), FileUtils.getFile(name, context, bitmap));
+            //     new ProductClient(context).loadProduct(name, description, type, Integer.parseInt(price), Integer.parseInt(weight), FileUtils.getFile(name, context, bitmap));
+            new ProductClient(context).testLoadProduct(name,
+                    description,
+                    type,
+                    Integer.parseInt(price),
+                    Integer.parseInt(weight),
+                    FileUtils.getFile(name, context, bitmap));
         });
 
+        button.setOnTouchListener(new MyTouchListener());
     }
 
 
